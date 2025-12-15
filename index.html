@@ -328,6 +328,36 @@
             color: var(--accent-primary);
         }
 
+        /* Filter Buttons */
+        .filter-section {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -351,6 +381,12 @@
             .hero h1 {
                 font-size: 2rem;
             }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -359,41 +395,27 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <a href="#" class="logo">CyberSec Lab</a>
+                <a href="index.html" class="logo">CyberSec Lab</a>
                 <p class="tagline">Research | Pentesting | Red Team</p>
             </div>
 
             <nav class="nav-section">
                 <div class="nav-title">Categories</div>
                 <ul class="nav-links">
-                    <li><a href="#" class="active">All Posts</a></li>
-                    <li><a href="#">Web Application Security</a></li>
-                    <li><a href="#">Network Penetration</a></li>
-                    <li><a href="#">Active Directory</a></li>
-                    <li><a href="#">Exploit Development</a></li>
-                    <li><a href="#">Red Team Operations</a></li>
-                    <li><a href="#">Security Research</a></li>
-                </ul>
-            </nav>
-
-            <nav class="nav-section">
-                <div class="nav-title">Methodologies</div>
-                <ul class="nav-links">
-                    <li><a href="#">OWASP Top 10</a></li>
-                    <li><a href="#">Bug Bounty</a></li>
-                    <li><a href="#">CTF Writeups</a></li>
-                    <li><a href="#">Privilege Escalation</a></li>
-                    <li><a href="#">Post Exploitation</a></li>
+                    <li><a href="index.html" class="active">All Posts</a></li>
+                    <li><a href="#" onclick="filterPosts('pentest'); return false;">Web Application Security</a></li>
+                    <li><a href="#" onclick="filterPosts('research'); return false;">Network Penetration</a></li>
+                    <li><a href="#" onclick="filterPosts('exploit'); return false;">Active Directory</a></li>
                 </ul>
             </nav>
 
             <nav class="nav-section">
                 <div class="nav-title">Resources</div>
                 <ul class="nav-links">
-                    <li><a href="#">Tools & Scripts</a></li>
-                    <li><a href="#">Payloads</a></li>
-                    <li><a href="#">Cheatsheets</a></li>
-                    <li><a href="#">About</a></li>
+                    <li><a href="#tools">Tools & Scripts</a></li>
+                    <li><a href="#payloads">Payloads</a></li>
+                    <li><a href="#cheatsheets">Cheatsheets</a></li>
+                    <li><a href="#about">About</a></li>
                 </ul>
             </nav>
         </aside>
@@ -413,106 +435,25 @@
                 <p>Exploring vulnerabilities, exploits, and penetration testing techniques. From web application security to red team operations.</p>
             </div>
 
-            <div class="blog-grid">
-                <div class="blog-card">
-                    <span class="blog-category pentest">Pentest</span>
-                    <h2 class="blog-title">Advanced SQL Injection Techniques</h2>
-                    <p class="blog-excerpt">Deep dive into modern SQL injection bypasses including WAF evasion, time-based blind injection, and exploiting stored procedures...</p>
-                    <div class="blog-meta">
-                        <span class="blog-date">Dec 15, 2025</span>
-                        <a href="#" class="blog-link">Read More →</a>
-                    </div>
-                </div>
+            <div class="filter-section">
+                <button class="filter-btn active" onclick="filterPosts('all')">All</button>
+                <button class="filter-btn" onclick="filterPosts('pentest')">Pentest</button>
+                <button class="filter-btn" onclick="filterPosts('research')">Research</button>
+                <button class="filter-btn" onclick="filterPosts('exploit')">Exploit</button>
+            </div>
 
-                <div class="blog-card">
-                    <span class="blog-category research">Research</span>
-                    <h2 class="blog-title">API Security Testing Methodology</h2>
-                    <p class="blog-excerpt">Comprehensive guide to testing REST and GraphQL APIs, including authentication bypass, rate limit abuse, and IDOR vulnerabilities...</p>
-                    <div class="blog-meta">
-                        <span class="blog-date">Dec 12, 2025</span>
-                        <a href="#" class="blog-link">Read More →</a>
-                    </div>
-                </div>
-
-                <div class="blog-card">
-                    <span class="blog-category exploit">Exploit</span>
-                    <h2 class="blog-title">Zero-Day in Legacy Systems</h2>
-                    <p class="blog-excerpt">Discovering and exploiting an authentication bypass in outdated enterprise software. Full disclosure with proof-of-concept code...</p>
-                    <div class="blog-meta">
-                        <span class="blog-date">Dec 10, 2025</span>
-                        <a href="#" class="blog-link">Read More →</a>
-                    </div>
-                </div>
-
-                <div class="blog-card">
-                    <span class="blog-category pentest">Pentest</span>
-                    <h2 class="blog-title">Active Directory Attack Paths</h2>
-                    <p class="blog-excerpt">Mapping and exploiting AD trust relationships, Kerberos attacks, and privilege escalation techniques in Windows environments...</p>
-                    <div class="blog-meta">
-                        <span class="blog-date">Dec 8, 2025</span>
-                        <a href="#" class="blog-link">Read More →</a>
-                    </div>
-                </div>
-
-                <div class="blog-card">
-                    <span class="blog-category research">Research</span>
-                    <h2 class="blog-title">XSS Filter Bypass in 2025</h2>
-                    <p class="blog-excerpt">Modern XSS payloads that bypass common WAFs and CSP policies. Testing against real-world applications and their defense mechanisms...</p>
-                    <div class="blog-meta">
-                        <span class="blog-date">Dec 5, 2025</span>
-                        <a href="#" class="blog-link">Read More →</a>
-                    </div>
-                </div>
-
-                <div class="blog-card">
-                    <span class="blog-category exploit">Exploit</span>
-                    <h2 class="blog-title">Container Escape Techniques</h2>
-                    <p class="blog-excerpt">Breaking out of Docker and Kubernetes containers. Exploiting misconfigurations and kernel vulnerabilities for host compromise...</p>
-                    <div class="blog-meta">
-                        <span class="blog-date">Dec 1, 2025</span>
-                        <a href="#" class="blog-link">Read More →</a>
-                    </div>
-                </div>
-
-                <div class="blog-card">
-                    <span class="blog-category pentest">Pentest</span>
-                    <h2 class="blog-title">Cloud Security Misconfigurations</h2>
-                    <p class="blog-excerpt">Common AWS, Azure, and GCP security issues. From exposed S3 buckets to privilege escalation in cloud IAM policies...</p>
-                    <div class="blog-meta">
-                        <span class="blog-date">Nov 28, 2025</span>
-                        <a href="#" class="blog-link">Read More →</a>
-                    </div>
-                </div>
-
-                <div class="blog-card">
-                    <span class="blog-category research">Research</span>
-                    <h2 class="blog-title">SSRF to Internal Network Access</h2>
-                    <p class="blog-excerpt">Exploiting server-side request forgery to pivot into internal networks. Techniques for port scanning, cloud metadata access, and more...</p>
-                    <div class="blog-meta">
-                        <span class="blog-date">Nov 25, 2025</span>
-                        <a href="#" class="blog-link">Read More →</a>
-                    </div>
-                </div>
-
-                <div class="blog-card">
-                    <span class="blog-category exploit">Exploit</span>
-                    <h2 class="blog-title">Reverse Shell Cheat Sheet</h2>
-                    <p class="blog-excerpt">Complete guide to generating reverse shells in various languages. Includes obfuscation techniques and AV bypass methods...</p>
-                    <div class="blog-meta">
-                        <span class="blog-date">Nov 20, 2025</span>
-                        <a href="#" class="blog-link">Read More →</a>
-                    </div>
-                </div>
+            <div class="blog-grid" id="blogGrid">
+                <!-- Blog posts will be loaded here by JavaScript -->
             </div>
 
             <footer>
                 <div class="footer-content">
                     <p>© 2025 CyberSec Research Lab. All research for educational purposes only.</p>
                     <div class="social-links">
-                        <a href="#">GitHub</a>
-                        <a href="#">Twitter</a>
-                        <a href="#">LinkedIn</a>
-                        <a href="#">RSS</a>
+                        <a href="https://github.com/yourusername" target="_blank">GitHub</a>
+                        <a href="https://twitter.com/yourusername" target="_blank">Twitter</a>
+                        <a href="https://linkedin.com/in/yourusername" target="_blank">LinkedIn</a>
+                        <a href="rss.xml">RSS</a>
                     </div>
                 </div>
             </footer>
@@ -520,6 +461,121 @@
     </div>
 
     <script>
+        // Blog posts data - ADD YOUR NEW POSTS HERE
+        const blogPosts = [
+            {
+                id: 'sql-injection',
+                category: 'pentest',
+                title: 'Advanced SQL Injection Techniques',
+                excerpt: 'Deep dive into modern SQL injection bypasses including WAF evasion, time-based blind injection, and exploiting stored procedures...',
+                date: 'Dec 15, 2025',
+                file: 'posts/sql-injection.html'
+            },
+            {
+                id: 'api-security',
+                category: 'research',
+                title: 'API Security Testing Methodology',
+                excerpt: 'Comprehensive guide to testing REST and GraphQL APIs, including authentication bypass, rate limit abuse, and IDOR vulnerabilities...',
+                date: 'Dec 12, 2025',
+                file: 'posts/api-security.html'
+            },
+            {
+                id: 'zero-day',
+                category: 'exploit',
+                title: 'Zero-Day in Legacy Systems',
+                excerpt: 'Discovering and exploiting an authentication bypass in outdated enterprise software. Full disclosure with proof-of-concept code...',
+                date: 'Dec 10, 2025',
+                file: 'posts/zero-day.html'
+            },
+            {
+                id: 'active-directory',
+                category: 'pentest',
+                title: 'Active Directory Attack Paths',
+                excerpt: 'Mapping and exploiting AD trust relationships, Kerberos attacks, and privilege escalation techniques in Windows environments...',
+                date: 'Dec 8, 2025',
+                file: 'posts/active-directory.html'
+            },
+            {
+                id: 'xss-bypass',
+                category: 'research',
+                title: 'XSS Filter Bypass in 2025',
+                excerpt: 'Modern XSS payloads that bypass common WAFs and CSP policies. Testing against real-world applications and their defense mechanisms...',
+                date: 'Dec 5, 2025',
+                file: 'posts/xss-bypass.html'
+            },
+            {
+                id: 'container-escape',
+                category: 'exploit',
+                title: 'Container Escape Techniques',
+                excerpt: 'Breaking out of Docker and Kubernetes containers. Exploiting misconfigurations and kernel vulnerabilities for host compromise...',
+                date: 'Dec 1, 2025',
+                file: 'posts/container-escape.html'
+            },
+            {
+                id: 'cloud-security',
+                category: 'pentest',
+                title: 'Cloud Security Misconfigurations',
+                excerpt: 'Common AWS, Azure, and GCP security issues. From exposed S3 buckets to privilege escalation in cloud IAM policies...',
+                date: 'Nov 28, 2025',
+                file: 'posts/cloud-security.html'
+            },
+            {
+                id: 'ssrf-attacks',
+                category: 'research',
+                title: 'SSRF to Internal Network Access',
+                excerpt: 'Exploiting server-side request forgery to pivot into internal networks. Techniques for port scanning, cloud metadata access, and more...',
+                date: 'Nov 25, 2025',
+                file: 'posts/ssrf-attacks.html'
+            },
+            {
+                id: 'reverse-shell',
+                category: 'exploit',
+                title: 'Reverse Shell Cheat Sheet',
+                excerpt: 'Complete guide to generating reverse shells in various languages. Includes obfuscation techniques and AV bypass methods...',
+                date: 'Nov 20, 2025',
+                file: 'posts/reverse-shell.html'
+            }
+        ];
+
+        // Load and display blog posts
+        function loadBlogPosts(filter = 'all') {
+            const grid = document.getElementById('blogGrid');
+            grid.innerHTML = '';
+            
+            const filteredPosts = filter === 'all' 
+                ? blogPosts 
+                : blogPosts.filter(post => post.category === filter);
+            
+            filteredPosts.forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'blog-card';
+                card.onclick = () => window.location.href = post.file;
+                
+                card.innerHTML = `
+                    <span class="blog-category ${post.category}">${post.category}</span>
+                    <h2 class="blog-title">${post.title}</h2>
+                    <p class="blog-excerpt">${post.excerpt}</p>
+                    <div class="blog-meta">
+                        <span class="blog-date">${post.date}</span>
+                        <a href="${post.file}" class="blog-link">Read More →</a>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Filter posts by category
+        function filterPosts(category) {
+            loadBlogPosts(category);
+            
+            // Update active filter button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
         // Theme Toggle
         function toggleTheme() {
             const html = document.documentElement;
@@ -540,8 +596,9 @@
             }
         }
 
-        // Load saved theme
+        // Initialize on page load
         window.addEventListener('DOMContentLoaded', () => {
+            // Load saved theme
             const savedTheme = localStorage.getItem('theme');
             const themeIcon = document.getElementById('theme-icon');
             const themeText = document.getElementById('theme-text');
@@ -551,6 +608,9 @@
                 themeIcon.textContent = '🌙';
                 themeText.textContent = 'Dark Mode';
             }
+            
+            // Load blog posts
+            loadBlogPosts();
         });
     </script>
 </body>
