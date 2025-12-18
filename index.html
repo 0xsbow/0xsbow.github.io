@@ -161,14 +161,9 @@
 
         .top-bar {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             margin-bottom: 40px;
-        }
-
-        .breadcrumb {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
         }
 
         .theme-toggle {
@@ -250,7 +245,13 @@
         .blog-category.web3-security { background: var(--purple); }
         .blog-category.ai-security { background: var(--warning); }
         .blog-category.cves { background: var(--danger); }
-        .blog-category.misc { background: var(--text-secondary); }
+
+        .blog-category.wordlists { background: #058c4d; }
+        .blog-category.methodology { background: #1f6feb; }
+        .blog-category.checklists { background: #8957e5; }
+        .blog-category.tools { background: #f0883e; }
+        .blog-category.payloads { background: #db61a2; }
+        .blog-category.cheatsheets { background: #d29922; }
 
         .blog-title {
             font-size: 1.3rem;
@@ -367,36 +368,34 @@
             <nav class="nav-section">
                 <div class="nav-title">Categories</div>
                 <ul class="nav-links">
-                    <li><a onclick="filterByCategory('all')" class="active">All Posts</a></li>
-                    <li><a onclick="filterByCategory('bug-bounty')">Bug Bounty</a></li>
-                    <li><a onclick="filterByCategory('web-security')">Web Application Security</a></li>
-                    <li><a onclick="filterByCategory('vapt')">VAPT</a></li>
-                    <li><a onclick="filterByCategory('red-team')">Red Team</a></li>
-                    <li><a onclick="filterByCategory('api-security')">API Security</a></li>
-                    <li><a onclick="filterByCategory('network-security')">Network Security</a></li>
-                    <li><a onclick="filterByCategory('mobile-security')">Mobile Security</a></li>
-                    <li><a onclick="filterByCategory('web3-security')">Web3 Security</a></li>
-                    <li><a onclick="filterByCategory('ai-security')">AI and LLM Security</a></li>
-                    <li><a onclick="filterByCategory('cves')">CVEs</a></li>
-                    <li><a onclick="filterByCategory('misc')">Miscellaneous</a></li>
+                    <li><a onclick="filterByType('blog', 'all')" class="active">All Posts</a></li>
+                    <li><a onclick="filterByType('blog', 'bug-bounty')">Bug Bounty</a></li>
+                    <li><a onclick="filterByType('blog', 'web-security')">Web Application Security</a></li>
+                    <li><a onclick="filterByType('blog', 'vapt')">VAPT</a></li>
+                    <li><a onclick="filterByType('blog', 'red-team')">Red Team</a></li>
+                    <li><a onclick="filterByType('blog', 'api-security')">API Security</a></li>
+                    <li><a onclick="filterByType('blog', 'network-security')">Network Security</a></li>
+                    <li><a onclick="filterByType('blog', 'mobile-security')">Mobile Security</a></li>
+                    <li><a onclick="filterByType('blog', 'web3-security')">Web3 Security</a></li>
+                    <li><a onclick="filterByType('blog', 'ai-security')">AI and LLM Security</a></li>
+                    <li><a onclick="filterByType('blog', 'cves')">CVEs</a></li>
                 </ul>
             </nav>
 
             <nav class="nav-section">
                 <div class="nav-title">Resources</div>
                 <ul class="nav-links">
-                    <li><a href="resources/wordlists.html">Wordlists</a></li>
-                    <li><a href="resources/methodology.html">Methodology</a></li>
-                    <li><a href="resources/checklists.html">Checklists</a></li>
-                    <li><a href="resources/tools.html">Tools & Scripts</a></li>
-                    <li><a href="resources/payloads.html">Payloads</a></li>
-                    <li><a href="resources/cheatsheets.html">Cheatsheets</a></li>
-                    <li><a href="resources/misc.html">Miscellaneous</a></li>
+                    <li><a onclick="filterByType('resource', 'all')">All Resources</a></li>
+                    <li><a onclick="filterByType('resource', 'wordlists')">Wordlists</a></li>
+                    <li><a onclick="filterByType('resource', 'methodology')">Methodology</a></li>
+                    <li><a onclick="filterByType('resource', 'checklists')">Checklists</a></li>
+                    <li><a onclick="filterByType('resource', 'tools')">Tools & Scripts</a></li>
+                    <li><a onclick="filterByType('resource', 'payloads')">Payloads</a></li>
+                    <li><a onclick="filterByType('resource', 'cheatsheets')">Cheatsheets</a></li>
                 </ul>
             </nav>
 
             <nav class="nav-section">
-                <div class="nav-title">About</div>
                 <ul class="nav-links">
                     <li><a href="about.html">About</a></li>
                 </ul>
@@ -405,7 +404,6 @@
 
         <main class="main-content">
             <div class="top-bar">
-                <div class="breadcrumb"></div>
                 <button class="theme-toggle" onclick="toggleTheme()">
                     <span id="theme-icon">☀️</span>
                     <span id="theme-text">Light Mode</span>
@@ -413,12 +411,12 @@
             </div>
 
             <div class="hero">
-                <h1>Latest Security Research</h1>
-                <p>Exploring vulnerabilities, exploits, and penetration testing techniques. From web application security to red team operations.</p>
+                <h1 id="heroTitle">Latest Security Research</h1>
+                <p id="heroDesc">Exploring vulnerabilities, exploits, and penetration testing techniques. From web application security to red team operations.</p>
             </div>
 
             <div class="blog-grid" id="blogGrid">
-                <!-- Blog posts will be loaded here by JavaScript -->
+                <!-- Content will be loaded here by JavaScript -->
             </div>
 
             <footer>
@@ -426,8 +424,8 @@
                     <p>© 2025 SBOW Infosec. All research for educational purposes only.</p>
                     <div class="social-links">
                         <a href="https://github.com/Sid-Bahuguna" target="_blank">GitHub</a>
-                        <a href="hhttps://x.com/Sidhartg3" target="_blank">Twitter</a>
-                        <a href="www.linkedin.com/in/sidharth-bahuguna" target="_blank">LinkedIn</a>
+                        <a href="https://x.com/Sidhartg3" target="_blank">Twitter</a>
+                        <a href="https://www.linkedin.com/in/sidharth-bahuguna" target="_blank">LinkedIn</a>
                     </div>
                 </div>
             </footer>
@@ -435,7 +433,7 @@
     </div>
 
     <script>
-        // Blog posts data - ADD YOUR NEW POSTS HERE
+        // Blog posts data
         const blogPosts = [
             {
                 id: 'react2shell-cve-2025-55182',
@@ -520,43 +518,179 @@
                 title: 'Complete VAPT Methodology Guide',
                 excerpt: 'End-to-end vulnerability assessment and penetration testing methodology covering reconnaissance, exploitation, and reporting...',
                 file: 'posts/vapt-methodology.html'
-            },
-            {
-                id: 'misc-tips',
-                category: 'misc',
-                title: 'Lesser-Known Security Tools You Should Know',
-                excerpt: 'Discover underrated security tools that can enhance your penetration testing workflow and improve your efficiency...',
-                file: 'posts/misc-tips.html'
             }
         ];
 
+        // Resources data
+        const resources = [
+            {
+                id: 'common-wordlists',
+                category: 'wordlists',
+                title: 'Common Security Wordlists',
+                excerpt: 'Collection of common wordlists used for brute-forcing, directory enumeration, and credential testing...',
+                file: 'resources/common-wordlists.html'
+            },
+            {
+                id: 'dns-wordlists',
+                category: 'wordlists',
+                title: 'DNS & Subdomain Wordlists',
+                excerpt: 'Specialized wordlists for DNS enumeration, subdomain discovery, and zone transfer testing...',
+                file: 'resources/dns-wordlists.html'
+            },
+            {
+                id: 'fuzzing-payloads',
+                category: 'wordlists',
+                title: 'API & Web Fuzzing Wordlists',
+                excerpt: 'Comprehensive wordlists for API parameter fuzzing, endpoint discovery, and hidden resource detection...',
+                file: 'resources/fuzzing-payloads.html'
+            },
+            {
+                id: 'pentest-methodology',
+                category: 'methodology',
+                title: 'Penetration Testing Methodology',
+                excerpt: 'Step-by-step framework for conducting professional penetration tests from reconnaissance to reporting...',
+                file: 'resources/pentest-methodology.html'
+            },
+            {
+                id: 'web-assessment-methodology',
+                category: 'methodology',
+                title: 'Web Application Testing Methodology',
+                excerpt: 'Detailed methodology for assessing web application security including OWASP Top 10 and beyond...',
+                file: 'resources/web-assessment-methodology.html'
+            },
+            {
+                id: 'api-testing-methodology',
+                category: 'methodology',
+                title: 'API Security Testing Methodology',
+                excerpt: 'Comprehensive approach for testing REST, GraphQL, and SOAP APIs for security vulnerabilities...',
+                file: 'resources/api-testing-methodology.html'
+            },
+            {
+                id: 'web-app-checklist',
+                category: 'checklists',
+                title: 'Web Application Security Checklist',
+                excerpt: 'Comprehensive checklist covering all OWASP categories and common web vulnerabilities...',
+                file: 'resources/web-app-checklist.html'
+            },
+            {
+                id: 'api-security-checklist',
+                category: 'checklists',
+                title: 'API Security Assessment Checklist',
+                excerpt: 'Complete checklist for API security testing including authentication, authorization, and data protection...',
+                file: 'resources/api-security-checklist.html'
+            },
+            {
+                id: 'mobile-security-checklist',
+                category: 'checklists',
+                title: 'Mobile Application Security Checklist',
+                excerpt: 'Detailed checklist for iOS and Android application security testing and vulnerability assessment...',
+                file: 'resources/mobile-security-checklist.html'
+            },
+            {
+                id: 'burpsuite-guide',
+                category: 'tools',
+                title: 'Burp Suite Mastery Guide',
+                excerpt: 'In-depth guide to using Burp Suite for web application penetration testing and exploitation...',
+                file: 'resources/burpsuite-guide.html'
+            },
+            {
+                id: 'metasploit-guide',
+                category: 'tools',
+                title: 'Metasploit Framework Guide',
+                excerpt: 'Complete guide to using Metasploit for vulnerability scanning, exploitation, and post-exploitation...',
+                file: 'resources/metasploit-guide.html'
+            },
+            {
+                id: 'custom-scripts',
+                category: 'tools',
+                title: 'Custom Python Security Scripts',
+                excerpt: 'Collection of custom Python scripts for reconnaissance, scanning, and exploitation automation...',
+                file: 'resources/custom-scripts.html'
+            },
+            {
+                id: 'sql-injection-payloads',
+                category: 'payloads',
+                title: 'SQL Injection Payloads',
+                excerpt: 'Collection of SQL injection payloads for different databases and WAF evasion techniques...',
+                file: 'resources/sql-injection-payloads.html'
+            },
+            {
+                id: 'xss-payloads',
+                category: 'payloads',
+                title: 'XSS Payload Collection',
+                excerpt: 'Comprehensive XSS payload collection including DOM-based, stored, and reflected XSS techniques...',
+                file: 'resources/xss-payloads.html'
+            },
+            {
+                id: 'command-injection-payloads',
+                category: 'payloads',
+                title: 'Command Injection Payloads',
+                excerpt: 'Command injection payloads for RCE, including shell escaping and filter bypass techniques...',
+                file: 'resources/command-injection-payloads.html'
+            },
+            {
+                id: 'linux-cheatsheet',
+                category: 'cheatsheets',
+                title: 'Linux Penetration Testing Cheatsheet',
+                excerpt: 'Quick reference guide for essential Linux commands used in penetration testing and exploitation...',
+                file: 'resources/linux-cheatsheet.html'
+            },
+            {
+                id: 'network-cheatsheet',
+                category: 'cheatsheets',
+                title: 'Network Enumeration Cheatsheet',
+                excerpt: 'Quick reference for network reconnaissance, scanning, and enumeration techniques and commands...',
+                file: 'resources/network-cheatsheet.html'
+            },
+            {
+                id: 'web-exploitation-cheatsheet',
+                category: 'cheatsheets',
+                title: 'Web Exploitation Cheatsheet',
+                excerpt: 'Quick reference guide for web application exploitation techniques and common attack vectors...',
+                file: 'resources/web-exploitation-cheatsheet.html'
+            }
+        ];
+
+        let currentType = 'blog';
         let currentFilter = 'all';
 
-        // Load and display blog posts
-        function loadBlogPosts(filter = 'all') {
+        // Load and display content
+        function loadContent(type = 'blog', filter = 'all') {
             const grid = document.getElementById('blogGrid');
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
             grid.innerHTML = '';
             
-            const filteredPosts = filter === 'all' 
-                ? blogPosts 
-                : blogPosts.filter(post => post.category === filter);
+            let dataSource = type === 'blog' ? blogPosts : resources;
+            let filteredContent = filter === 'all' 
+                ? dataSource 
+                : dataSource.filter(item => item.category === filter);
             
-            if (filteredPosts.length === 0) {
-                grid.innerHTML = '<p style="color: var(--text-secondary); text-align: center; grid-column: 1/-1;">No posts found in this category yet.</p>';
+            // Update hero section
+            if (type === 'blog') {
+                heroTitle.textContent = 'Latest Security Research';
+                heroDesc.textContent = 'Exploring vulnerabilities, exploits, and penetration testing techniques. From web application security to red team operations.';
+            } else {
+                heroTitle.textContent = 'Security Resources';
+                heroDesc.textContent = 'Curated collection of tools, wordlists, methodologies, checklists, payloads, and cheatsheets for security professionals.';
+            }
+            
+            if (filteredContent.length === 0) {
+                grid.innerHTML = '<p style="color: var(--text-secondary); text-align: center; grid-column: 1/-1;">No content found in this category yet.</p>';
                 return;
             }
 
-            filteredPosts.forEach(post => {
+            filteredContent.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'blog-card';
-                card.onclick = () => window.location.href = post.file;
+                card.onclick = () => window.location.href = item.file;
                 
                 card.innerHTML = `
-                    <span class="blog-category ${post.category}">${getCategoryDisplayName(post.category)}</span>
-                    <h2 class="blog-title">${post.title}</h2>
-                    <p class="blog-excerpt">${post.excerpt}</p>
+                    <span class="blog-category ${item.category}">${getDisplayName(item.category)}</span>
+                    <h2 class="blog-title">${item.title}</h2>
+                    <p class="blog-excerpt">${item.excerpt}</p>
                     <div class="blog-meta">
-                        <a href="${post.file}" class="blog-link" onclick="event.stopPropagation()">Read More →</a>
+                        <a href="${item.file}" class="blog-link" onclick="event.stopPropagation()">View →</a>
                     </div>
                 `;
                 
@@ -565,7 +699,7 @@
         }
 
         // Get display name for category
-        function getCategoryDisplayName(category) {
+        function getDisplayName(category) {
             const names = {
                 'bug-bounty': 'Bug Bounty',
                 'web-security': 'Web Security',
@@ -577,17 +711,23 @@
                 'web3-security': 'Web3 Security',
                 'ai-security': 'AI Security',
                 'cves': 'CVE',
-                'misc': 'Misc'
+                'wordlists': 'Wordlist',
+                'methodology': 'Methodology',
+                'checklists': 'Checklist',
+                'tools': 'Tools',
+                'payloads': 'Payload',
+                'cheatsheets': 'Cheatsheet'
             };
             return names[category] || category;
         }
 
-        // Filter posts by category
-        function filterByCategory(category) {
+        // Filter by type and category
+        function filterByType(type, category) {
+            currentType = type;
             currentFilter = category;
-            loadBlogPosts(category);
+            loadContent(type, category);
             
-            // Update active state in sidebar
+            // Update active state
             document.querySelectorAll('.nav-links a').forEach(link => {
                 link.classList.remove('active');
             });
@@ -628,7 +768,7 @@
             }
             
             // Load blog posts
-            loadBlogPosts();
+            loadContent('blog', 'all');
         });
     </script>
 </body>
