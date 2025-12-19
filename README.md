@@ -8,7 +8,7 @@ A modern cyber security and hacking resource platform for sharing security resea
 ## 🌟 Features
 
 - **Dark Theme by Default** - Professional hacker aesthetic with light theme option
-- **11 Security Categories** - Organized content across multiple security domains
+- **Security Categories** - Organized content across multiple security domains
 - **Resource Hub** - Comprehensive collection of wordlists, methodologies, checklists, and tools
 - **Responsive Design** - Mobile-friendly layout that works on all devices
 - **Easy to Customize** - Simple JavaScript-based post management
