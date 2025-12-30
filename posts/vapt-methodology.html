@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete VAPT Methodology Guide - End-to-End Framework</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-primary: #58a6ff;
+            --accent-secondary: #1f6feb;
+            --border-color: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --danger: #f85149;
+            --code-bg: #161b22;
+            --vapt-accent: #9966ff;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f6f8fa;
+            --bg-tertiary: #eaeef2;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --accent-primary: #0969da;
+            --accent-secondary: #0550ae;
+            --border-color: #d0d7de;
+            --success: #1a7f37;
+            --warning: #9a6700;
+            --danger: #cf222e;
+            --code-bg: #f6f8fa;
+            --vapt-accent: #6f42c1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+        }
+
+        .post-header {
+            margin-bottom: 50px;
+        }
+
+        .post-category {
+            display: inline-block;
+            padding: 6px 14px;
+            background: var(--vapt-accent);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .post-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .post-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .post-content h2 {
+            font-size: 1.8rem;
+            margin: 40px 0 20px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content h4 {
+            font-size: 1.1rem;
+            margin: 20px 0 10px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content p {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+
+        .post-content ul, .post-content ol {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        .post-content li {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .post-content code {
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: var(--accent-primary);
+        }
+
+        .post-content pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .post-content pre code {
+            background: transparent;
+            padding: 0;
+            color: var(--text-primary);
+            display: block;
+        }
+
+        .info-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-primary);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .danger-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--danger);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .success-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--success);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .info-box h4, .warning-box h4, .danger-box h4, .success-box h4 {
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .methodology-table {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .methodology-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .methodology-table th {
+            background: var(--bg-tertiary);
+            padding: 15px;
+            text-align: left;
+            color: var(--text-primary);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .methodology-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .methodology-table tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .phase-box {
+            background: var(--bg-secondary);
+            border: 2px solid var(--vapt-accent);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .phase-number {
+            display: inline-block;
+            background: var(--vapt-accent);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            line-height: 40px;
+            text-align: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .phase-title {
+            display: inline-block;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .triad-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .triad-item {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .triad-item h4 {
+            color: var(--vapt-accent);
+            margin-bottom: 15px;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .post-title {
+                font-size: 2rem;
+            }
+
+            .post-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .post-content h3 {
+                font-size: 1.2rem;
+            }
+
+            .triad-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <a href="../index.html" class="back-link">← Back to Blog</a>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span id="theme-icon">☀️</span>
+                <span id="theme-text">Light Mode</span>
+            </button>
+        </div>
+
+        <article>
+            <header class="post-header">
+                <span class="post-category">VAPT</span>
+                <h1 class="post-title">Complete VAPT Methodology Guide: End-to-End Framework</h1>
+                <div class="post-meta">
+                </div>
+            </header>
+
+            <div class="post-content">
+                <p>Vulnerability Assessment and Penetration Testing (VAPT) is a comprehensive security evaluation process that identifies, exploits, and documents security weaknesses in organizational systems. This guide provides a complete framework covering all five phases of penetration testing, industry-standard methodologies, foundational security triads, and practical implementation strategies.</p>
+
+                <h2>Understanding VAPT: Core Concepts</h2>
+
+                <h3>Vulnerability Assessment vs. Penetration Testing</h3>
+                <p><strong>Vulnerability Assessment:</strong> A systematic process of identifying, classifying, and prioritizing vulnerabilities in systems, networks, and applications. It focuses on DISCOVERY without attempting to exploit vulnerabilities.</p>
+
+                <p><strong>Penetration Testing:</strong> An authorized, simulated attack on systems to evaluate security posture by attempting to exploit identified vulnerabilities. It demonstrates IMPACT and real-world attack chains.</p>
+
+                <div class="info-box">
+                    <h4>💡 Key Difference</h4>
+                    <p>Vulnerability Assessment identifies "What's broken?" while Penetration Testing answers "How can we break in?" VAPT combines both approaches for comprehensive security evaluation.</p>
+                </div>
+
+                <h2>The Security Fundamentals: Two Critical Triads</h2>
+
+                <h3>1. CIA Triad (Confidentiality, Integrity, Availability)</h3>
+                <p>The CIA triad represents the three pillars of information security that VAPT activities protect:</p>
+
+                <div class="triad-container">
+                    <div class="triad-item">
+                        <h4>🔒 Confidentiality</h4>
+                        <p>Ensuring sensitive information is accessible only to authorized individuals. Tests focus on authentication, authorization, and encryption mechanisms.</p>
+                    </div>
+                    <div class="triad-item">
+                        <h4>✅ Integrity</h4>
+                        <p>Ensuring data accuracy and completeness throughout its lifecycle. Tests evaluate input validation, access controls, and change management.</p>
+                    </div>
+                    <div class="triad-item">
+                        <h4>⚡ Availability</h4>
+                        <p>Ensuring systems and data are accessible when needed. Tests include DoS/DDoS testing, backup verification, and failover mechanisms.</p>
+                    </div>
+                </div>
+
+                <h3>2. People, Process, and Technology Triad (PPT)</h3>
+                <p>Successful VAPT engagement requires balancing human, procedural, and technical factors:</p>
+
+                <div class="triad-container">
+                    <div class="triad-item">
+                        <h4>👥 People</h4>
+                        <p>Security awareness, training, access controls, insider threat programs, and human error prevention. VAPT tests social engineering, phishing, and credential handling.</p>
+                    </div>
+                    <div class="triad-item">
+                        <h4>⚙️ Process</h4>
+                        <p>Policies, procedures, incident response, patch management, and security governance. VAPT evaluates process adherence and control effectiveness.</p>
+                    </div>
+                    <div class="triad-item">
+                        <h4>🖥️ Technology</h4>
+                        <p>Systems, applications, networks, and infrastructure. VAPT identifies technical vulnerabilities across all technology layers.</p>
+                    </div>
+                </div>
+
+                <h2>The Cyber Kill Chain: Attack Methodology Framework</h2>
+
+                <p>The Cyber Kill Chain, developed by Lockheed Martin, provides a structured model of how attackers operate. VAPT simulates each phase:</p>
+
+                <ol>
+                    <li><strong>Reconnaissance:</strong> Gathering intelligence about target systems (passive and active)</li>
+                    <li><strong>Weaponization:</strong> Creating or modifying tools and payloads for exploitation</li>
+                    <li><strong>Delivery:</strong> Transmitting weaponized payloads through attack vectors (email, web, physical)</li>
+                    <li><strong>Exploitation:</strong> Executing attacks to trigger malicious actions on target systems</li>
+                    <li><strong>Installation:</strong> Installing backdoors, malware, or persistence mechanisms</li>
+                    <li><strong>Command & Control:</strong> Establishing communication with compromised systems</li>
+                    <li><strong>Actions on Objectives:</strong> Executing attacker goals (exfiltration, destruction, lateral movement)</li>
+                </ol>
+
+                <div class="success-box">
+                    <h4>✓ VAPT's Role in Kill Chain Defense</h4>
+                    <p>VAPT activities focus on detecting and interrupting each phase of the kill chain, providing recommendations for defensive improvements at each stage.</p>
+                </div>
+
+                <h2>The Five Phases of Penetration Testing</h2>
+
+                <h3>Phase 1: Pre-Engagement and Planning</h3>
+                <div class="phase-box">
+                    <span class="phase-number">1</span>
+                    <span class="phase-title">Planning & Scoping</span>
+                </div>
+
+                <p>Before any testing begins, proper planning ensures legal compliance, clear objectives, and manageable scope.</p>
+
+                <h4>Key Activities:</h4>
+                <ul>
+                    <li><strong>Scope Definition:</strong> Define in-scope and out-of-scope systems, IP ranges, and applications</li>
+                    <li><strong>Rules of Engagement (RoE):</strong> Document authorized testing windows, contact information, and restrictions</li>
+                    <li><strong>Legal Documentation:</strong> Obtain written authorization, signed NDA, and liability waivers</li>
+                    <li><strong>Objectives Definition:</strong> Establish testing goals (compliance, vulnerability discovery, security posture assessment)</li>
+                    <li><strong>Resource Allocation:</strong> Determine team composition, timeline, and budget</li>
+                    <li><strong>Risk Assessment:</strong> Identify potential risks of testing activities and mitigation strategies</li>
+                </ul>
+
+                <h4>Deliverables:</h4>
+                <pre><code>✓ Statement of Work (SoW)
+✓ Rules of Engagement Document
+✓ Signed Authorization Letter
+✓ Testing Scope Document
+✓ Timeline and Resource Plan
+✓ Risk Assessment Report</code></pre>
+
+                <h3>Phase 2: Reconnaissance (Information Gathering)</h3>
+                <div class="phase-box">
+                    <span class="phase-number">2</span>
+                    <span class="phase-title">Reconnaissance</span>
+                </div>
+
+                <p>Comprehensive information gathering about target systems using both passive and active techniques.</p>
+
+                <h4>Passive Reconnaissance (No Direct Contact):</h4>
+                <ul>
+                    <li><strong>OSINT (Open Source Intelligence):</strong> Public records, social media, company websites</li>
+                    <li><strong>DNS Enumeration:</strong> DNS records, subdomains, mail servers (nslookup, dig, whois)</li>
+                    <li><strong>Search Engine Dorking:</strong> Google, Bing, Shodan, Censys queries for exposed data</li>
+                    <li><strong>Website Analysis:</strong> Technologies, metadata, comments, JavaScript analysis</li>
+                    <li><strong>Social Engineering Preparation:</strong> Email harvesting, LinkedIn profiling, employee research</li>
+                </ul>
+
+                <h4>Active Reconnaissance (Direct Interaction):</h4>
+                <ul>
+                    <li><strong>Port Scanning:</strong> Identify open ports and services (nmap, masscan)</li>
+                    <li><strong>Service Enumeration:</strong> Identify service versions, banners, and configurations</li>
+                    <li><strong>Network Mapping:</strong> Identify network topology and interconnections</li>
+                    <li><strong>Vulnerability Scanning:</strong> Automated scanning for known vulnerabilities (Nessus, OpenVAS)</li>
+                    <li><strong>Web Application Mapping:</strong> Identify endpoints, parameters, and functionality (Burp Suite, OWASP ZAP)</li>
+                </ul>
+
+                <h4>Tools Used:</h4>
+                <pre><code>Passive: whois, nslookup, dig, host, Shodan, Censys, OSINT tools
+Active: nmap, masscan, Nessus, OpenVAS, Burp Suite, OWASP ZAP, gobuster</code></pre>
+
+                <h3>Phase 3: Vulnerability Assessment and Analysis</h3>
+                <div class="phase-box">
+                    <span class="phase-number">3</span>
+                    <span class="phase-title">Vulnerability Assessment</span>
+                </div>
+
+                <p>Systematic identification of security weaknesses and detailed analysis of each discovered vulnerability.</p>
+
+                <h4>Assessment Activities:</h4>
+                <ul>
+                    <li><strong>Manual Vulnerability Testing:</strong> Hands-on testing against identified attack surfaces</li>
+                    <li><strong>Configuration Review:</strong> Evaluate security configurations (TLS versions, cipher suites, headers)</li>
+                    <li><strong>Access Control Testing:</strong> Identify privilege escalation and lateral movement opportunities</li>
+                    <li><strong>Application Testing:</strong> Input validation, authentication bypass, business logic flaws (OWASP Top 10)</li>
+                    <li><strong>Cryptography Review:</strong> Weak encryption, insecure key management, hashing algorithms</li>
+                    <li><strong>Patch Management Evaluation:</strong> Assess missing security patches and update cadence</li>
+                </ul>
+
+                <h4>OWASP Top 10 Testing (Web Applications):</h4>
+                <pre><code>A01: Broken Access Control
+A02: Cryptographic Failures
+A03: Injection
+A04: Insecure Design
+A05: Security Misconfiguration
+A06: Vulnerable and Outdated Components
+A07: Authentication and Session Management
+A08: Software and Data Integrity Failures
+A09: Logging and Monitoring Failures
+A10: Server-Side Request Forgery (SSRF)</code></pre>
+
+                <h3>Phase 4: Exploitation and Testing</h3>
+                <div class="phase-box">
+                    <span class="phase-number">4</span>
+                    <span class="phase-title">Exploitation</span>
+                </div>
+
+                <p>Authorized, controlled attempts to exploit identified vulnerabilities to demonstrate real-world impact.</p>
+
+                <h4>Exploitation Strategies:</h4>
+                <ul>
+                    <li><strong>Direct Exploitation:</strong> Exploit individual vulnerabilities with available PoC code</li>
+                    <li><strong>Chaining Vulnerabilities:</strong> Combine multiple vulnerabilities to increase impact</li>
+                    <li><strong>Privilege Escalation:</strong> Escalate from low-privilege user to system administrator</li>
+                    <li><strong>Lateral Movement:</strong> Move across network to access additional systems</li>
+                    <li><strong>Persistence Techniques:</strong> Establish backdoors and persistent access mechanisms</li>
+                    <li><strong>Data Exfiltration:</strong> Demonstrate ability to access and extract sensitive data</li>
+                </ul>
+
+                <h4>Attack Simulation Scenarios:</h4>
+                <pre><code>Scenario 1: External Attacker
+Goal: Gain initial foothold via internet-exposed systems
+
+Scenario 2: Insider Threat
+Goal: Escalate from standard user to administrator
+
+Scenario 3: Lateral Movement
+Goal: Move from DMZ to internal network
+
+Scenario 4: Data Breach
+Goal: Locate and exfiltrate sensitive data</code></pre>
+
+                <h4>Exploitation Tools:</h4>
+                <pre><code>Metasploit Framework, Burp Suite, SQLMap, hashcat, John the Ripper,
+Impacket tools, Empire, Mimikatz, BloodHound, PowerShell Empire</code></pre>
+
+                <div class="warning-box">
+                    <h4>⚠️ Exploitation Guidelines</h4>
+                    <p>Always obtain explicit written permission. Limit exploitation scope. Avoid data destruction. Never disrupt production systems. Maintain detailed logs of exploitation activities. Have rollback plans ready.</p>
+                </div>
+
+                <h3>Phase 5: Reporting and Remediation</h3>
+                <div class="phase-box">
+                    <span class="phase-number">5</span>
+                    <span class="phase-title">Reporting & Remediation</span>
+                </div>
+
+                <p>Comprehensive documentation of findings and actionable recommendations for remediation.</p>
+
+                <h4>Report Components:</h4>
+                <ul>
+                    <li><strong>Executive Summary:</strong> High-level overview for C-level executives (1-2 pages)</li>
+                    <li><strong>Risk Rating:</strong> Critical, High, Medium, Low based on CVSS scores</li>
+                    <li><strong>Vulnerability Details:</strong> Each finding with description, impact, and proof of concept</li>
+                    <li><strong>Remediation Recommendations:</strong> Specific, actionable steps to fix each issue</li>
+                    <li><strong>Timeline:</strong> Suggested patching and remediation schedule</li>
+                    <li><strong>Testing Methodology:</strong> Detailed explanation of testing approach</li>
+                    <li><strong>Tools and Techniques Used:</strong> Documentation for reproducibility</li>
+                </ul>
+
+                <h4>CVSS v3.1 Scoring Example:</h4>
+                <pre><code>CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H = 9.8 (Critical)
+
+AV (Attack Vector): Network/Adjacent/Local/Physical
+AC (Attack Complexity): Low/High
+PR (Privileges Required): None/Low/High
+UI (User Interaction): None/Required
+S (Scope): Unchanged/Changed
+C (Confidentiality): None/Low/High
+I (Integrity): None/Low/High
+A (Availability): None/Low/High</code></pre>
+
+                <h4>Remediation Prioritization:</h4>
+                <pre><code>Priority 1 (Critical): CVSS 9.0-10.0 → Fix within 24-48 hours
+Priority 2 (High): CVSS 7.0-8.9 → Fix within 1 week
+Priority 3 (Medium): CVSS 4.0-6.9 → Fix within 2-4 weeks
+Priority 4 (Low): CVSS 0.1-3.9 → Fix within 30 days</code></pre>
+
+                <h2>Industry-Standard VAPT Methodologies</h2>
+
+                <div class="methodology-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Methodology</th>
+                                <th>Focus Area</th>
+                                <th>Key Characteristics</th>
+                                <th>Best For</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>OWASP Testing Guide (OTG)</strong></td>
+                                <td>Web Applications</td>
+                                <td>Comprehensive checklist of web app vulnerabilities, 12 categories, detailed test cases</td>
+                                <td>Web application security assessments</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NIST SP 800-115</strong></td>
+                                <td>Technical Security Testing</td>
+                                <td>Guidelines for IT security testing, 3 testing types, risk-based approach</td>
+                                <td>Federal agencies, compliance-driven testing</td>
+                            </tr>
+                            <tr>
+                                <td><strong>MITRE ATT&CK Framework</strong></td>
+                                <td>Adversary Tactics & Techniques</td>
+                                <td>Knowledge base of adversary behavior, 14 tactic categories, 700+ techniques</td>
+                                <td>Threat-aligned testing, red team operations</td>
+                            </tr>
+                            <tr>
+                                <td><strong>PCI DSS Assessment</strong></td>
+                                <td>Payment Card Industry</td>
+                                <td>Compliance-focused, 12 requirements, annual testing mandated</td>
+                                <td>Payment processing organizations</td>
+                            </tr>
+                            <tr>
+                                <td><strong>PTES (Penetration Testing Execution Standard)</strong></td>
+                                <td>Comprehensive Pen Testing</td>
+                                <td>7-phase framework, industry collaboration, practical methodology</td>
+                                <td>General penetration testing engagements</td>
+                            </tr>
+                            <tr>
+                                <td><strong>HIPAA Security Assessment</strong></td>
+                                <td>Healthcare Security</td>
+                                <td>Privacy and security rules, 164 requirements, breach notification mandatory</td>
+                                <td>Healthcare organizations</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ISO/IEC 27001:2022</strong></td>
+                                <td>Information Security Management</td>
+                                <td>114 controls, systematic approach, certification available</td>
+                                <td>Comprehensive security program assessment</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>OWASP Testing Checklist (Web Applications)</h2>
+
+                <h3>Information Gathering</h3>
+                <ul>
+                    <li>Conduct search engine discovery/reconnaissance (Google dorking)</li>
+                    <li>Identify web application architecture</li>
+                    <li>Map application content</li>
+                    <li>Fingerprint web server</li>
+                    <li>Review web application comments and metadata</li>
+                </ul>
+
+                <h3>Configuration & Deployment Management</h3>
+                <ul>
+                    <li>Test network infrastructure configuration</li>
+                    <li>Test application platform configuration</li>
+                    <li>Test for file extensions handling</li>
+                    <li>Review old, backup, and unreferenced files</li>
+                    <li>Enumerate infrastructure and application administration interfaces</li>
+                </ul>
+
+                <h3>Identity, Authentication & Access Control</h3>
+                <ul>
+                    <li>Test for user enumeration</li>
+                    <li>Test for weak/guessable usernames and passwords</li>
+                    <li>Test for weak security question/answer</li>
+                    <li>Test for weak password change or reset functionalities</li>
+                    <li>Test for authentication bypass</li>
+                    <li>Test session management scheme</li>
+                    <li>Test for privilege escalation</li>
+                </ul>
+
+                <h3>Business Logic Testing</h3>
+                <ul>
+                    <li>Test for business logic data validation</li>
+                    <li>Test for ability to forge requests</li>
+                    <li>Test for process timing</li>
+                    <li>Test number of times a resource can be accessed</li>
+                    <li>Test for circumventing workflow</li>
+                </ul>
+
+                <h3>Input Validation Testing</h3>
+                <ul>
+                    <li>Test for SQL injection</li>
+                    <li>Test for command injection</li>
+                    <li>Test for LDAP injection</li>
+                    <li>Test for XML injection</li>
+                    <li>Test for XPath injection</li>
+                    <li>Test for cross-site scripting (XSS)</li>
+                    <li>Test for cross-site request forgery (CSRF)</li>
+                    <li>Test for buffer overflow</li>
+                    <li>Test for malicious file upload</li>
+                    <li>Test for path traversal</li>
+                </ul>
+
+                <h3>Error Handling</h3>
+                <ul>
+                    <li>Test for improper error handling</li>
+                    <li>Test for stack traces</li>
+                    <li>Test for sensitive information in error messages</li>
+                </ul>
+
+                <h3>Cryptography Testing</h3>
+                <ul>
+                    <li>Test for weak SSL/TLS configuration</li>
+                    <li>Test for cryptographic algorithms weakness</li>
+                    <li>Test for insufficient entropy</li>
+                    <li>Test for sensitive data exposure in transit</li>
+                </ul>
+
+                <h3>Business Logic Testing</h3>
+                <ul>
+                    <li>Test multi-step processes for bypasses</li>
+                    <li>Test transaction consistency</li>
+                    <li>Test for race conditions</li>
+                </ul>
+
+                <h2>MITRE ATT&CK Framework Integration</h2>
+
+                <p>The MITRE ATT&CK Framework provides a knowledge base of adversary behavior. VAPT testing should validate defenses against these tactic categories:</p>
+
+                <h4>Reconnaissance (Pre-Attack)</h4>
+                <p>T1592 Gather Victim Host Information, T1589 Gather Victim Identity Information, T1590 Gather Victim Network Information</p>
+
+                <h4>Initial Access</h4>
+                <p>T1189 Drive-by Compromise, T1566 Phishing, T1195 Supply Chain Compromise, T1199 Trusted Relationship</p>
+
+                <h4>Execution</h4>
+                <p>T1059 Command and Scripting Interpreter, T1203 Exploitation for Client Execution, T1559 Inter-Process Communication</p>
+
+                <h4>Persistence</h4>
+                <p>T1098 Account Manipulation, T1197 Browser Extensions, T1547 Boot or Logon Autostart Execution, T1037 Boot or Logon Initialization Scripts</p>
+
+                <h4>Privilege Escalation</h4>
+                <p>T1548 Abuse Elevation Control Mechanism, T1134 Access Token Manipulation, T1547 Boot or Logon Autostart Execution</p>
+
+                <h4>Defense Evasion</h4>
+                <p>T1548 Abuse Elevation Control Mechanism, T1197 Browser Extensions, T1140 Deobfuscate/Decode Files or Information</p>
+
+                <h4>Credential Access</h4>
+                <p>T1110 Brute Force, T1555 Credentials from Password Stores, T1187 Forced Phishing, T1056 Input Capture</p>
+
+                <h4>Discovery</h4>
+                <p>T1087 Account Discovery, T1580 Cloud Infrastructure Discovery, T1538 Cloud Service Dashboard, T1526 Cloud Service Discovery</p>
+
+                <h4>Lateral Movement</h4>
+                <p>T1570 Lateral Tool Transfer, T1570 Lateral Tool Transfer, T1021 Remote Service Session Initiation</p>
+
+                <h4>Collection</h4>
+                <p>T1123 Audio Capture, T1119 Automated Exfiltration, T1115 Clipboard Data, T1530 Data from Cloud Storage Object</p>
+
+                <h4>Command & Control</h4>
+                <p>T1071 Application Layer Protocol, T1092 Communication Through Removable Media, T1001 Data Obfuscation</p>
+
+                <h4>Exfiltration</h4>
+                <p>T1020 Automated Exfiltration, T1030 Data Transfer Size Limits, T1048 Exfiltration Over Alternative Protocol</p>
+
+                <h4>Impact</h4>
+                <p>T1531 Account Access Removal, T1531 Account Access Removal, T1561 Disk Wipe, T1561 Disk Wipe, T1499 Endpoint Denial of Service</p>
+
+                <h2>NIST Cybersecurity Framework (CSF) Alignment</h2>
+
+                <p>VAPT activities support NIST CSF core functions:</p>
+
+                <h3>Identify</h3>
+                <ul>
+                    <li>Inventory of critical assets</li>
+                    <li>System and application inventory</li>
+                    <li>Access control and privilege mapping</li>
+                </ul>
+
+                <h3>Protect</h3>
+                <ul>
+                    <li>Access controls implementation</li>
+                    <li>Data security controls</li>
+                    <li>Protective technology deployment</li>
+                </ul>
+
+                <h3>Detect</h3>
+                <ul>
+                    <li>Anomalies and events detection</li>
+                    <li>Continuous monitoring</li>
+                    <li>Detection processes and tools</li>
+                </ul>
+
+                <h3>Respond</h3>
+                <ul>
+                    <li>Incident response procedures</li>
+                    <li>Mitigation activities</li>
+                    <li>Improvements to processes</li>
+                </ul>
+
+                <h3>Recover</h3>
+                <ul>
+                    <li>Recovery planning</li>
+                    <li>Business continuity</li>
+                    <li>Improvements to recovery processes</li>
+                </ul>
+
+                <h2>Comprehensive Test Cases and Scenarios</h2>
+
+                <h3>Authentication Test Cases</h3>
+                <pre><code>TC-AUTH-001: Test for password policy enforcement
+  Input: Common passwords (123456, password, admin)
+  Expected: Rejection of weak passwords
+
+TC-AUTH-002: Test for account lockout mechanism
+  Input: 5+ failed login attempts
+  Expected: Account locked for 30 minutes
+
+TC-AUTH-003: Test for brute force protection
+  Input: Rapid login attempts from same IP
+  Expected: Rate limiting or CAPTCHA triggered
+
+TC-AUTH-004: Test for credential storage
+  Verify: Passwords hashed with bcrypt/scrypt/argon2
+  Expected: No plaintext passwords in database
+
+TC-AUTH-005: Test for session fixation
+  Action: Obtain session ID, login, verify session changes
+  Expected: New session ID after login</code></pre>
+
+                <h3>Authorization Test Cases</h3>
+                <pre><code>TC-AUTHZ-001: Test for horizontal privilege escalation
+  Action: User A attempts to access User B's data
+  Expected: Access denied
+
+TC-AUTHZ-002: Test for vertical privilege escalation
+  Action: Standard user attempts admin functions
+  Expected: Insufficient privileges error
+
+TC-AUTHZ-003: Test for insecure direct object references (IDOR)
+  Input: Modify resource ID in URL (user/1 → user/2)
+  Expected: Access only own resources
+
+TC-AUTHZ-004: Test for missing access controls
+  Action: Unauthenticated user accesses protected endpoints
+  Expected: Redirect to login</code></pre>
+
+                <h3>Data Protection Test Cases</h3>
+                <pre><code>TC-DATA-001: Test for data encryption in transit
+  Verification: All HTTPS connections
+  Expected: TLS 1.2+, no SSL/early TLS versions
+
+TC-DATA-002: Test for data encryption at rest
+  Verification: Check database encryption
+  Expected: AES-256 or equivalent
+
+TC-DATA-003: Test for PII exposure in logs
+  Analysis: Review application logs
+  Expected: No passwords, SSN, credit cards in logs
+
+TC-DATA-004: Test for data retention policies
+  Verification: Backup and deletion procedures
+  Expected: Data deleted per retention policy</code></pre>
+
+                <h3>Business Logic Test Cases</h3>
+                <pre><code>TC-BL-001: Test for race conditions in transactions
+  Action: Simultaneous requests for same resource
+  Expected: Proper locking/sequencing
+
+TC-BL-002: Test for workflow bypass
+  Action: Skip steps in multi-step process
+  Expected: Cannot proceed without all steps
+
+TC-BL-003: Test for price manipulation
+  Input: Modify item price in shopping cart
+  Expected: Price from server used, not client
+
+TC-BL-004: Test for duplicate transaction prevention
+  Action: Submit same request twice
+  Expected: Only one transaction processed</code></pre>
+
+                <h2>People, Process, and Technology Assessment Framework</h2>
+
+                <h3>People Assessment</h3>
+                <ul>
+                    <li><strong>Social Engineering Testing:</strong> Phishing campaigns, pretexting, physical security bypasses</li>
+                    <li><strong>Security Awareness:</strong> Employee knowledge of security policies and procedures</li>
+                    <li><strong>Insider Threat Simulation:</strong> Compromised employee account scenarios</li>
+                    <li><strong>Access Management Review:</strong> Segregation of duties, least privilege verification</li>
+                    <li><strong>Credential Handling:</strong> Password sharing, sticky notes, email transmission of credentials</li>
+                </ul>
+
+                <h3>Process Assessment</h3>
+                <ul>
+                    <li><strong>Change Management Review:</strong> Are security controls updated with changes?</li>
+                    <li><strong>Incident Response Verification:</strong> Test incident response playbooks and team capabilities</li>
+                    <li><strong>Patch Management Validation:</strong> Identify missing security patches and update frequency</li>
+                    <li><strong>Access Control Procedures:</strong> Onboarding/offboarding processes, access request approvals</li>
+                    <li><strong>Security Governance:</strong> Policy documentation, compliance verification</li>
+                </ul>
+
+                <h3>Technology Assessment</h3>
+                <ul>
+                    <li><strong>Infrastructure Security:</strong> Network segmentation, firewall rules, IDS/IPS effectiveness</li>
+                    <li><strong>Application Security:</strong> Code vulnerabilities, frameworks, dependencies</li>
+                    <li><strong>Endpoint Security:</strong> Antivirus, EDR, encryption, patch status</li>
+                    <li><strong>Cloud Security:</strong> Configuration, access controls, data protection</li>
+                    <li><strong>Logging and Monitoring:</strong> Log collection, retention, alerting capabilities</li>
+                </ul>
+
+                <h2>Post-Engagement Activities</h2>
+
+                <h3>Debrief Meeting</h3>
+                <p>Schedule meeting with stakeholders to discuss:</p>
+                <ul>
+                    <li>Summary of findings and overall risk posture</li>
+                    <li>Critical issues requiring immediate attention</li>
+                    <li>Questions and clarifications on test methodology</li>
+                    <li>Prioritization of remediation efforts</li>
+                </ul>
+
+                <h3>Remediation Support</h3>
+                <ul>
+                    <li>Provide additional technical guidance on fixes</li>
+                    <li>Assist with proof-of-concept validation</li>
+                    <li>Support re-testing after remediation</li>
+                    <li>Offer ongoing security recommendations</li>
+                </ul>
+
+                <h3>Re-testing and Verification</h3>
+                <ul>
+                    <li>Verify critical findings have been remediated</li>
+                    <li>Confirm no regressions introduced by fixes</li>
+                    <li>Validate new controls are effective</li>
+                    <li>Document remediation timeline and completion</li>
+                </ul>
+
+                <h2>Key Takeaways and Best Practices</h2>
+
+                <ul>
+                    <li><strong>Holistic Approach:</strong> VAPT must address people, processes, and technology comprehensively</li>
+                    <li><strong>Risk-Based Prioritization:</strong> Focus on high-impact vulnerabilities aligned with business criticality</li>
+                    <li><strong>Continuous Improvement:</strong> Regular testing cycles (annual minimum) ensure sustained security posture</li>
+                    <li><strong>Methodology Standardization:</strong> Follow established frameworks (OWASP, NIST, PTES) for consistency and completeness</li>
+                    <li><strong>Threat-Informed Testing:</strong> Align tests with actual threat actors (MITRE ATT&CK)</li>
+                    <li><strong>Clear Communication:</strong> Executive summaries and actionable recommendations drive remediation</li>
+                    <li><strong>Automation and Tooling:</strong> Leverage scanners for initial identification, supplement with manual testing</li>
+                    <li><strong>Documentation:</strong> Maintain detailed records for compliance, trend analysis, and improvement tracking</li>
+                </ul>
+
+                <h2>Conclusion</h2>
+
+                <p>VAPT is a critical component of modern cybersecurity programs. By following the five-phase methodology, aligning with industry-standard frameworks (OWASP, NIST, MITRE ATT&CK, ISO/IEC 27001), and maintaining a balanced focus on people, processes, and technology, organizations can effectively identify and remediate security vulnerabilities before attackers exploit them.</p>
+
+                <p>The CIA triad and PPT triad provide conceptual foundations, while the cyber kill chain helps simulate realistic attack scenarios. Comprehensive test cases ensure nothing is missed, and detailed reporting drives effective remediation. When executed properly, VAPT becomes a strategic investment in organizational security and resilience.</p>
+
+                <p>Remember: The goal of VAPT is not to find the most vulnerabilities, but to find the vulnerabilities that matter most to your business and help your organization reduce risk.</p>
+            </div>
+        </article>
+
+        <footer>
+            <p>© 2025 SBOW Infosec. All research for educational purposes only.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = html.getAttribute('data-theme');
+            
+            if (currentTheme === 'light') {
+                html.removeAttribute('data-theme');
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        });
+    </script>
+</body>
+</html>
