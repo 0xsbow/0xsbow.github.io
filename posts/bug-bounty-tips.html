@@ -540,9 +540,7 @@ sqlmap -u "https://target.com/search?q=test" --batch --dbs
                 <h4>Test for XSS (Cross-Site Scripting)</h4>
 
                 <pre><code># Simple payload testing:
-# Input: ```` <img src=x onerror=alert(1)>  ```
-# Input: ```` <svg onload=alert(1)>  ```
-# Input: ```  "><script>alert(1)</script>  ```
+# Input: ">, <>, "", '', /
 
 # Test in all input fields:
 # Search boxes, comment sections, user profiles, settings
